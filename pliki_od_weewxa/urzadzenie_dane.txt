@@ -1,0 +1,8 @@
+{
+    "vendor_id": 26214,
+    "product_id": 21845,
+    "model": "TFA KlimaLogg Pro",
+    "max_history_records": 51200,
+    "batch_size": 1800,
+    "first_sleep": 0.3
+}

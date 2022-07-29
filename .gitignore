@@ -1,0 +1,7 @@
+.env
+__pycache__
+logs
+wyniki_test.txt
+*.log
+json_do_wysylki.txt
+odebrane_jsony_z_konfiguracjami.json

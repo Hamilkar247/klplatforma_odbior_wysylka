@@ -1,0 +1,4 @@
+psutil==5.9.1
+python-dotenv==0.20.0
+pyusb==1.2.1
+usb==0.0.83.dev0
