@@ -1,5 +1,6 @@
 # - *- coding: utf-8 - *-
 
+from inspect import trace
 import urllib.request, json
 import hashlib
 import sys
@@ -87,10 +88,21 @@ class PobranieOutsystem(object):
     def plik_z_alarmami(self):
         url=f"{self.url_do_pobrania_alarmow}{get_mac_address()}"
         content_new=None
-        with urllib.request.urlopen(url) as url:
-            content_new = json.dumps(json.loads(url.read()), indent=2) #json.loads(url.read())
+        try:
+            with urllib.request.urlopen(url) as url:
+                content_new = json.dumps(json.loads(url.read()), indent=2) #json.loads(url.read())
+        except Exception as e:
+            drukuj(f"EEEEEEEEEERRRRRROOOOOOOORRRR")
+            drukuj(f"{e}")
+            drukuj(f"sprawdz link: {url}")
+            traceback.print_exc()
 
-        path_to_file=self.path_to_config+"/urzadzenia/"+get_mac_address()+".json" #"mother_sn_"+get_mother_serial_number()+".json"
+        urzadzenia_path = f"{self.path_to_config}/urzadzenia"
+        if os.path.isdir(urzadzenia_path) == True:
+            pass
+        else:
+            os.mkdir(urzadzenia_path)
+        path_to_file=f"{urzadzenia_path}/{get_mac_address()}.json" #"mother_sn_"+get_mother_serial_number()+".json"
         if os.path.exists(path_to_file):
             drukuj(os.stat(path_to_file).st_size)
             if os.stat(path_to_file).st_size > 30:
