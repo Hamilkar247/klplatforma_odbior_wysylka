@@ -131,48 +131,29 @@ class SortoUsredniacz(object):
                 lista_pomiarow=[]
                 lista_pomiarow.append(elm_listy)
                 dict_transmitters[key]=lista_pomiarow
-                #drukuj("usrednione")
-          #######  else:
-          #######      lista_pomiarow=dict_transmitters[key]
-          #######      lista_pom_temp=[]
-          #######      lista_pom_wilg=[]
-          #######      
-          #######      elm_listy=lista_pomiarow[0]
-          #######      lista_pom_temp.append()
-          #######      lista_pom_wilg=
-          #######      srednia_temp=self.avg
-          #######      #chce zeby koncowka byla 00 sekund
-          #######      czas_bez_sekund=elm_listy["time"][:-2]
-          #######      czas=czas_bez_sekund+"00"
-          #######      elm_listy["time"]=czas
-          #######      elm_listy["zasieg"]=f"{round((1/6)*100, 2):.1f}"
-          #######      drukuj("nie ma co usredniac - jest tylko jeden rekord")
-        #drukuj("_____________________________________")
-        #drukuj(dict_transmitters)
         return dict_transmitters
 
     def avg_temp(self, lista_pom_temp):
         suma=0
         try:
             for pom_temp in lista_pom_temp:
-                #if else dodany ze wzgledu na to że - dla debiana(raspbian) zwraca mi literal temp "25.9 C" a dla ubuntu float 25.9
-                print("kurrrrrrrrrrrrr")
-                print(f"{type(pom_temp)}")
-                print(f"{pom_temp}")
+                ####if else dodany ze wzgledu na to że - dla debiana(raspbian) zwraca mi literal temp "25.9 C" a dla ubuntu float 25.9
+                #print(f"{type(pom_temp)}")
+                #print(f"{pom_temp}")
                 if type(pom_temp) == str:     
-                    print("tutej mam str")
+                    #print("tutej mam str")
                     czynnik=float(pom_temp.split(" ")[0])
                 else: #raczej tu będzie po prostu float jeśli nie string
-                    print("tutej mam float")
+                    #print("tutej mam float")
                     czynnik=pom_temp
                 suma=suma+float(czynnik)
-                print(f"suma: {suma}")
+                #print(f"suma: {suma}")
             wynik=suma/len(lista_pom_temp)
             #drukuj(wynik)
             wynik=f"{round(wynik,2):.1f}"
             #drukuj(f"wynik {wynik}")
             wynik=wynik+" C"
-            print(f"wynik: {wynik}")
+            #print(f"wynik: {wynik}")
             if type(wynik) == str:
                 return wynik # ma zwrocic int
             else:
