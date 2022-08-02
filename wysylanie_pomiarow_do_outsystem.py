@@ -443,7 +443,8 @@ class KlasaWysylka(object):
                         #drukuj("dziala")
                         json_object = json.dumps(json_data, indent = 4)
                         #plik będący logiem wysyłanych plików do tomka
-                        with open(f"{self.basic_path_project}/json_do_wysylki.txt", "a") as outfile:
+                        path_to_json_wysylki_txt=f"{self.basic_path_project}/json_do_wysylki.txt"
+                        with open(f"{path_to_json_wysylki_txt}", "a+") as outfile:
                             outfile.write("----------------------------")
                             outfile.write(str(data_i_godzina()))
                             outfile.write("\n"+json_object) 
