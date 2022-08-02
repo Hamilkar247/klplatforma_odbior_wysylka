@@ -143,8 +143,14 @@ class PobranieOutsystem(object):
     def plik_z_konfiguracja_raspberki(self):
         url=f"{self.url_do_pobrania_konfiguracji}{get_mac_address()}"
         content_new=None
-        with urllib.request.urlopen(url) as url:
-            content_new = json.dumps(json.loads(url.read()), indent=2) #json.loads(url.read())
+        try:
+            with urllib.request.urlopen(url) as url:
+                content_new = json.dumps(json.loads(url.read()), indent=2) #json.loads(url.read())
+        except Exception as e:
+            drukuj(f"EEEEEEEEEERRRRRROOOOOOOORRRR")
+            drukuj(f"{e}")
+            drukuj(f"sprawdz link: {url}")
+            traceback.print_exc()
 
         path_to_file=f"{self.path_to_config}/config.json"
         if os.path.exists(path_to_file):
