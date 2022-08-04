@@ -28,6 +28,9 @@ def przerwij_i_wyswietl_czas():
     print("Current Time =", current_time)
     sys.exit()
 
+class ExceptionEnvProjektu(Exception):
+    pass
+
 def start():
     basic_path_ram=os.getenv("basic_path_ram")
     vendor_id=0x0bda
@@ -54,23 +57,34 @@ def start():
             f.write("\n")
 
 def main():
+    basic_path_ram=""
     flara_skryptu=f"{nazwa_programu()}.flara"
     try:
         drukuj(f"------------{nazwa_programu()}-------------")
         dotenv_path = "./.env"
+        if os.path.exists(dotenv_path) == False:
+            drukuj("sprawdz czy plik .env istnieje")
+            raise ExceptionEnvProjektu
         load_dotenv(dotenv_path)
         basic_path_ram=os.getenv("basic_path_ram")
+        if os.path.isdir(basic_path_ram)==False:
+            drukuj(f".env - sprawdz basic_path_ram {basic_path_ram}")
+            raise ExceptionEnvProjektu
         flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
         with open(flara_skryptu, "w") as f:
             f.write("\n")
         start()
-        if os.path.exists(flara_skryptu):
-            os.remove(flara_skryptu)
-    except Exception as e:
-        drukuj(f"{e}")
+    except ExceptionEnvProjektu as e:
+        drukuj(f"exception {e}")
+        drukuj(f"sprawdz czy dobrze wpisales dane w .env (albo czy w ogole je wpisales ...)")
         traceback.print_exc()
+    except Exception as e:
+        drukuj(f"exception {e}")
+        drukuj(f"sprawdz czy .env widziany jest w crontabie")
+        traceback.print_exc()
+    if os.path.isdir(basic_path_ram):
         if os.path.exists(flara_skryptu):
             os.remove(flara_skryptu)
-
+            drukuj("usuwam flare")
 if __name__ == "__main__":
     main()

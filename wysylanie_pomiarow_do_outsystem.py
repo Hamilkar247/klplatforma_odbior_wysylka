@@ -39,6 +39,9 @@ def przerwij_i_wyswietl_czas():
     print("Current Time =", current_time)
     sys.exit()
 
+class ExceptionEnvProjektu(Exception):
+    pass
+
 class KlasaWysylka(object):
     def __init__(self, inicjalna):
         #flagi do statusu
@@ -488,31 +491,42 @@ def main():
     try:
         drukuj(f"------{nazwa_programu()}--------")
         dotenv_path = "./.env"
+        if os.path.exists(dotenv_path) == False:
+            drukuj("sprawdz czy plik .env istnieje")
+            raise ExceptionEnvProjektu
         load_dotenv(dotenv_path)
         if os.name == "posix":
             drukuj("posix")
             basic_path_ram=os.getenv('basic_path_ram')
-            drukuj(f"basic_path_ram: {basic_path_ram}")
+            if os.path.isdir(basic_path_ram)==False:
+                drukuj(f".env - sprawdz basic_path_ram {basic_path_ram}")
+                raise ExceptionEnvProjektu
         else:
             drukuj("notposix - pewnie windows - wez to czlowieku oprogramuj")
             przerwij_i_wyswietl_czas()
         if os.path.isdir(f"{basic_path_ram}") == True:
             flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
             with open(flara_skryptu, "w") as file:
-                 file.write(f"{str(os.getpid())}")
+                if os.name=="posix":
+                    file.write(f"{str(os.getpid())}")
+                else:
+                    file.write("notposix")
             file.close()
             inicjalna=False
             klasawysylka=KlasaWysylka(inicjalna)
-            if os.path.exists(flara_skryptu):
-                os.remove(flara_skryptu)
         else:
             drukuj("BRAK SCIESZKI - sprawdż czy .env i folder roboczy wiedza o swoim istnieniu")
+    except ExceptionEnvProjektu as e:
+        drukuj(f"exception {e}")
+        drukuj(f"sprawdz czy dobrze wpisales dane w .env (albo czy w ogole je wpisales ...)")
+        traceback.print_exc()
     except Exception as e:
         drukuj(f"exception {e}")
         drukuj(f"sprawdz czy .env widziany jest w crontabie")
         #os.remove(fal)
         traceback.print_exc()
-        if os.path.isdir(basic_path_ram):
+    if os.path.isdir(basic_path_ram):
+        if os.path.exists(flara_skryptu):
             os.remove(flara_skryptu)
             drukuj("usuwam flare")
 

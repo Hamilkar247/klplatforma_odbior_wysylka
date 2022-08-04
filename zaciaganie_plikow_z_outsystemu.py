@@ -33,6 +33,9 @@ def przerwij_i_wyswietl_czas():
     print("Current Time =", current_time)
     sys.exit()
 
+class ExceptionEnvProjektu(Exception):
+    pass
+
 def numer_seryjny_raspberki():
     sn=[]
     with open("/sys/firmware/devicetree/base/serial-number", "r") as plik_numer_seryjny:
@@ -42,6 +45,7 @@ def numer_seryjny_raspberki():
     return sn[0][0:-1]
 
 def get_mac_address():
+    drukuj("def: get_mac_address")
     #mac_address_int = uuid.getnode()
     #drukuj(mac_address_int)
     #mac_address_hex = hex(mac_address_int)
@@ -49,11 +53,18 @@ def get_mac_address():
     #mac_address_hex_bez_zeroiks=str(mac_address_hex).split("x")[1]#f"{mac_address_hex[2,-1]}"
     #drukuj(f"MAC address:{mac_address_hex}")
     #return mac_address_hex_bez_zeroiks
-    nics = psutil.net_if_addrs()[os.getenv('interfejs_sieciowy')]
-    for interface in nics:
-        if interface.family == 17:
-            print(interface.address)
-    return interface.address
+    interfejs_return=""
+    try:
+        nics = psutil.net_if_addrs()[os.getenv('interfejs_sieciowy')]
+        interfejs_return=""
+        for interface in nics:
+            if interface.family == 17:
+                drukuj(interface.address)
+                interfejs_return=interface.address
+    except KeyError as e:
+        drukuj(f"exception: {e}")
+        raise ExceptionEnvProjektu
+    return interfejs_return
 
 # def get_mother_serial_number():
 #     try:
@@ -199,10 +210,16 @@ def main():
     try:
         drukuj(f"--------{nazwa_programu()}-------------")
         dotenv_path = "./.env"
+        if os.path.exists(dotenv_path) == False:
+            drukuj("sprawdz czy plik .env istnieje")
+            raise ExceptionEnvProjektu
         load_dotenv(dotenv_path)
         if os.name == "posix":
             drukuj("posix")
             basic_path_ram=os.getenv('basic_path_ram')
+            if os.path.isdir(basic_path_ram)==False:
+                drukuj(f".env - sprawdz basic_path_ram {basic_path_ram}")
+                raise ExceptionEnvProjektu
         else:
             drukuj("notposix - pewnie windows - wez to czlowieku oprogramuj")
             przerwij_i_wyswietl_czas()
@@ -215,19 +232,20 @@ def main():
                     file.write("notposix")
             file.close()
             pobieranie_plikow_z_serwera()
-            if os.path.exists(flara_skryptu):
-                os.remove(flara_skryptu)
         else:
             drukuj("BRAK SCIESZKI - sprawdż czy .env i folder roboczy wiedza o swoim istnieniu")
+    except ExceptionEnvProjektu as e:
+        drukuj(f"exception {e}")
+        drukuj(f"sprawdz czy dobrze wpisales dane w .env (albo czy w ogole je wpisales ...)")
+        traceback.print_exc()
     except Exception as e:
         drukuj(f"exception {e}")
         drukuj(f"sprawdz czy .env widziany jest w crontabie")
-        #os.remove(fal)
         traceback.print_exc()
-        if os.path.isdir(basic_path_ram):
+    if os.path.isdir(basic_path_ram):
+        if os.path.exists(flara_skryptu): 
             os.remove(flara_skryptu)
             drukuj("usuwam flare")
-
 
 if __name__ == "__main__":
     main()
