@@ -40,6 +40,9 @@ def przerwij_i_wyswietl_czas():
     print("Current Time =", current_time)
     sys.exit()
 
+class ExceptionEnvProjektu(Exception):
+    pass
+
 class thread_with_exception(threading.Thread):
     def __init__(self, name = "", target = None, start_time = None, interval = None):
         threading.Thread.__init__(self)
@@ -161,8 +164,31 @@ def start():
         drukuj(f"Błąd: {e}")
         traceback.print_exc()
 
-class ExceptionEnvProjektu(Exception):
-    pass
+def file_istnienie(path_to_file, komunikat):
+    if os.path.isdir(path_to_file):
+        drukuj(f"{komunikat}")
+        raise ExceptionEnvProjektu
+    return True
+
+def folder_istnienie(path_to_folder, komunikat):
+    if os.path.isdir(path_to_folder):
+        drukuj(f"{komunikat}")
+        raise ExceptionEnvProjektu
+    return True
+
+def zmienna_env_file(tag_in_env, komunikat):
+    path_to_file=os.getenv(tag_in_env)
+    if os.path.exists(path_to_file) == False:
+        drukuj(f"{komunikat}, tag:{tag_in_env}, path:{path_to_file}")#sprawdz czy plik .env istnieje")
+        raise ExceptionEnvProjektu
+    return path_to_file
+
+def zmienna_env_folder(tag_in_env, komunikat):
+    path_to_folder=os.getenv(tag_in_env)
+    if os.path.isdir(path_to_folder) == False:
+        drukuj(f"{komunikat}, tag:{tag_in_env}, path:{path_to_folder}")#sprawdz czy plik .env istnieje")
+        raise ExceptionEnvProjektu
+    return path_to_folder
 
 def main():
     basic_path_ram=""
@@ -172,25 +198,18 @@ def main():
         if os.name=="posix":
             drukuj("posix")
             dotenv_path="./.env"
-            if os.path.exists(dotenv_path) == False:
-                drukuj("dotenv_path - coś nie tak")
-                raise ExceptionEnvProjektu
+            file_istnienie(dotenv_path, "dotenv_path - coś nie tak")
             load_dotenv(dotenv_path)
-            basic_path_ram="/run/user/1000"
-            if os.path.isdir(basic_path_ram) == False:
-                drukuj("basic_path_ram - coś nie tak")
-                raise ExceptionEnvProjektu
-            path_to_config=os.getenv("path_to_config")
-            if os.path.isdir(path_to_config) == False:
-                drukuj("path_to_config - coś nie tak")
-                raise ExceptionEnvProjektu
-        flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
-        flara_file=open(flara_skryptu, "w")
-        flara_file.write(f"{str(os.getpid())}")
-        flara_file.close()
-        start()
-        if os.path.exists(flara_skryptu):
-            os.remove(flara_skryptu)
+            basic_path_ram=zmienna_env_folder("basic_path_ram","basic_path_ram - coś nie tak")
+            path_to_config=zmienna_env_folder("path_to_config", "path_to_config - coś nie tak")
+            
+            flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
+            flara_file=open(flara_skryptu, "w")
+            flara_file.write(f"{str(os.getpid())}")
+            flara_file.close()
+            start()
+        else:
+            drukuj("oprogramuj tego windowsa ziom")
     except ExceptionEnvProjektu as e:
         drukuj(f"exception {e}")
         drukuj(f"czy napewno skopiowales .env.example i podmieniles tam scieszki na takie jakie maja byc w programie?")
@@ -199,7 +218,8 @@ def main():
         drukuj(f"exception {e}")
         drukuj(f"sprawdz czy .env widziany jest w crontabie")
         traceback.print_exc()
-        if os.path.isdir(basic_path_ram):
+    if os.path.isdir(basic_path_ram):
+        if os.path.exists(flara_skryptu):
             os.remove(flara_skryptu)
             drukuj("usuwam flare")
 

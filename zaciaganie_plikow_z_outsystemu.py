@@ -36,6 +36,32 @@ def przerwij_i_wyswietl_czas():
 class ExceptionEnvProjektu(Exception):
     pass
 
+def file_istnienie(path_to_file, komunikat):
+    if os.path.isdir(path_to_file):
+        drukuj(f"{komunikat}")
+        raise ExceptionEnvProjektu
+    return True
+
+def folder_istnienie(path_to_folder, komunikat):
+    if os.path.isdir(path_to_folder):
+        drukuj(f"{komunikat}")
+        raise ExceptionEnvProjektu
+    return True
+
+def zmienna_env_file(tag_in_env, komunikat):
+    path_to_file=os.getenv(tag_in_env)
+    if os.path.exists(path_to_file) == False:
+        drukuj(f"{komunikat}, tag:{tag_in_env}, path:{path_to_file}")#sprawdz czy plik .env istnieje")
+        raise ExceptionEnvProjektu
+    return path_to_file
+
+def zmienna_env_folder(tag_in_env, komunikat):
+    path_to_folder=os.getenv(tag_in_env)
+    if os.path.isdir(path_to_folder) == False:
+        drukuj(f"{komunikat}, tag:{tag_in_env}, path:{path_to_folder}")#sprawdz czy plik .env istnieje")
+        raise ExceptionEnvProjektu
+    return path_to_folder
+
 def numer_seryjny_raspberki():
     sn=[]
     with open("/sys/firmware/devicetree/base/serial-number", "r") as plik_numer_seryjny:
@@ -65,20 +91,6 @@ def get_mac_address():
         drukuj(f"exception: {e}")
         raise ExceptionEnvProjektu
     return interfejs_return
-
-# def get_mother_serial_number():
-#     try:
-#         path_to_file='/home/klraspi/klraspi/pliki_od_weewxa/urzadzenie_dane.json'
-#         data = []
-#         if os.path.exists(path_to_file): 
-#             with open(path_to_file,"r") as f: 
-#                 data = json.load(f)
-#         drukuj(data['serial_number'])
-#         return str(data['serial_number'])
-#     except Exception as e:
-#         drukuj(e)
-#         drukuj(traceback.print_exc())
-#         return "NONE"
 
 class PobranieOutsystem(object):
     def __init__(self):
@@ -209,31 +221,20 @@ def main():
     flara_skryptu=""
     try:
         drukuj(f"--------{nazwa_programu()}-------------")
-        dotenv_path = "./.env"
-        if os.path.exists(dotenv_path) == False:
-            drukuj("sprawdz czy plik .env istnieje")
-            raise ExceptionEnvProjektu
-        load_dotenv(dotenv_path)
-        if os.name == "posix":
+        if os.name=="posix":
             drukuj("posix")
-            basic_path_ram=os.getenv('basic_path_ram')
-            if os.path.isdir(basic_path_ram)==False:
-                drukuj(f".env - sprawdz basic_path_ram {basic_path_ram}")
-                raise ExceptionEnvProjektu
-        else:
-            drukuj("notposix - pewnie windows - wez to czlowieku oprogramuj")
-            przerwij_i_wyswietl_czas()
-        if os.path.isdir(f"{basic_path_ram}") == True:
+            dotenv_path = "./.env"
+            file_istnienie(dotenv_path, "dotenv_path - coś nie tak")
+            load_dotenv(dotenv_path)
+            basic_path_ram=zmienna_env_folder('basic_path_ram', ".env - sprawdz basic_path_ram")
+
             flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
             with open(flara_skryptu, "w") as file:
-                if os.name=="posix":
-                    file.write(f"{str(os.getpid())}")
-                else:
-                    file.write("notposix")
+                file.write(f"{str(os.getpid())}")
             file.close()
             pobieranie_plikow_z_serwera()
         else:
-            drukuj("BRAK SCIESZKI - sprawdż czy .env i folder roboczy wiedza o swoim istnieniu")
+            drukuj("oprogramowanie tego Windowsa ziom")
     except ExceptionEnvProjektu as e:
         drukuj(f"exception {e}")
         drukuj(f"sprawdz czy dobrze wpisales dane w .env (albo czy w ogole je wpisales ...)")

@@ -30,9 +30,40 @@ def przerwij_i_wyswietl_czas():
     print("Current Time =", current_time)
     sys.exit()
 
+class ExceptionEnvProjektu(Exception):
+    pass
+
+def file_istnienie(path_to_file, komunikat):
+    if os.path.isdir(path_to_file):
+        drukuj(f"{komunikat}")
+        raise ExceptionEnvProjektu
+    return True
+
+def folder_istnienie(path_to_folder, komunikat):
+    if os.path.isdir(path_to_folder):
+        drukuj(f"{komunikat}")
+        raise ExceptionEnvProjektu
+    return True
+
+def zmienna_env_file(tag_in_env, komunikat):
+    path_to_file=os.getenv(tag_in_env)
+    if os.path.exists(path_to_file) == False:
+        drukuj(f"{komunikat}, tag:{tag_in_env}, path:{path_to_file}")#sprawdz czy plik .env istnieje")
+        raise ExceptionEnvProjektu
+    return path_to_file
+
+def zmienna_env_folder(tag_in_env, komunikat):
+    path_to_folder=os.getenv(tag_in_env)
+    if os.path.isdir(path_to_folder) == False:
+        drukuj(f"{komunikat}, tag:{tag_in_env}, path:{path_to_folder}")#sprawdz czy plik .env istnieje")
+        raise ExceptionEnvProjektu
+    return path_to_folder
+
+####################################
+
 def sprawdz_program_o_tym_pid_dziala(pid):
     import psutil
-    pid = 12345
+    pid = 0
     if psutil.pid_exists(pid):
         print("a process with pid %d exists" % pid)
         return
@@ -61,41 +92,48 @@ def start(flara_path):
             break
         time.sleep(1)
     petla_programu.main()
-    os.remove(flara_path)
 
 def main():
     basic_path_ram=""
     flara_skryptu=""
-    drukuj("kuzwa")
     try:
         drukuj(f"------{nazwa_programu()}--------")
-        dotenv_path = "./.env"
-        load_dotenv(dotenv_path)
         if os.name == "posix":
+            drukuj("posix")
+            dotenv_path = "./.env"
+            file_istnienie(dotenv_path, "dotenv_path - coś nie tak")
+            load_dotenv(dotenv_path)
+            begin_path_ram=zmienna_env_folder("basic_path_ram","basic_path_ram - coś nie tak")
+           
             drukuj(f"{os.getpid()}")
-            begin_path_ram=os.getenv('basic_path_ram')
-        flara_path=(f"{begin_path_ram}/{nazwa_programu()}.flara")
-        if os.path.isfile(flara_path) == False:
-            start(flara_path)
-        else:
-            drukuj("flara skryptu istnieje")
-            with open(flara_path, "r") as file:
-                linie=file.readline()
-            pid=int(linie)
-            #dziala_flaga=sprawdz_program_o_tym_pid_dziala(pid)
-            print(pid)
-            if psutil.pid_exists(pid) == True:
-                drukuj("skrypt istnieje i działa - więc nie uruchamiam")
+            flara_skryptu=(f"{begin_path_ram}/{nazwa_programu()}.flara")
+            if os.path.isfile(flara_skryptu) == False:
+                start(flara_skryptu)
             else:
-                os.remove(flara_path)
-                drukuj("usuwam plik flary i startujemy na nowo program")
-                start(flara_path)
+                drukuj("flara skryptu istnieje")
+                with open(flara_skryptu, "r") as file:
+                    linie=file.readline()
+                pid=int(linie)
+                #dziala_flaga=sprawdz_program_o_tym_pid_dziala(pid)
+                print(pid)
+                if psutil.pid_exists(pid) == True:
+                    drukuj("skrypt istnieje i działa - więc nie uruchamiam")
+                else:
+                    os.remove(flara_skryptu)
+                    drukuj("usuwam plik flary i startujemy na nowo program")
+                    start(flara_skryptu)
+        else:
+            drukuj("obsluz tego windowsa ziom")
+    except ExceptionEnvProjektu as e:
+        drukuj(f"exception {e}")
+        drukuj(f"czy napewno skopiowales .env.example i podmieniles tam scieszki na takie jakie maja byc w programie?")
+        traceback.print_exc()
     except Exception as e:
         drukuj(f"exception {e}")
         drukuj(f"sprawdz czy .env widziany jest w crontabie")
-        #os.remove(fal)
         traceback.print_exc()
-        if os.path.exists(basic_path_ram):
+    if os.path.isdir(basic_path_ram):
+        if os.path.exists(flara_skryptu):
             os.remove(flara_skryptu)
             drukuj("usuwam flare")
 

@@ -42,6 +42,32 @@ def przerwij_i_wyswietl_czas():
 class ExceptionEnvProjektu(Exception):
     pass
 
+def file_istnienie(path_to_file, komunikat):
+    if os.path.isdir(path_to_file):
+        drukuj(f"{komunikat}")
+        raise ExceptionEnvProjektu
+    return True
+
+def folder_istnienie(path_to_folder, komunikat):
+    if os.path.isdir(path_to_folder):
+        drukuj(f"{komunikat}")
+        raise ExceptionEnvProjektu
+    return True
+
+def zmienna_env_file(tag_in_env, komunikat):
+    path_to_file=os.getenv(tag_in_env)
+    if os.path.exists(path_to_file) == False:
+        drukuj(f"{komunikat}, tag:{tag_in_env}, path:{path_to_file}")#sprawdz czy plik .env istnieje")
+        raise ExceptionEnvProjektu
+    return path_to_file
+
+def zmienna_env_folder(tag_in_env, komunikat):
+    path_to_folder=os.getenv(tag_in_env)
+    if os.path.isdir(path_to_folder) == False:
+        drukuj(f"{komunikat}, tag:{tag_in_env}, path:{path_to_folder}")#sprawdz czy plik .env istnieje")
+        raise ExceptionEnvProjektu
+    return path_to_folder
+
 class KlasaWysylka(object):
     def __init__(self, inicjalna):
         #flagi do statusu
@@ -490,32 +516,22 @@ def main():
     flara_skryptu=""
     try:
         drukuj(f"------{nazwa_programu()}--------")
-        dotenv_path = "./.env"
-        if os.path.exists(dotenv_path) == False:
-            drukuj("sprawdz czy plik .env istnieje")
-            raise ExceptionEnvProjektu
-        load_dotenv(dotenv_path)
         if os.name == "posix":
             drukuj("posix")
-            basic_path_ram=os.getenv('basic_path_ram')
-            if os.path.isdir(basic_path_ram)==False:
-                drukuj(f".env - sprawdz basic_path_ram {basic_path_ram}")
-                raise ExceptionEnvProjektu
-        else:
-            drukuj("notposix - pewnie windows - wez to czlowieku oprogramuj")
-            przerwij_i_wyswietl_czas()
-        if os.path.isdir(f"{basic_path_ram}") == True:
+            dotenv_path = "./.env"
+            file_istnienie(dotenv_path, "sprawdz czy plik .env istnieje")
+            load_dotenv(dotenv_path)
+            basic_path_ram=zmienna_env_folder('basic_path_ram', ".env - sprawdz basic_path_ram")
+
             flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
             with open(flara_skryptu, "w") as file:
-                if os.name=="posix":
-                    file.write(f"{str(os.getpid())}")
-                else:
-                    file.write("notposix")
+                file.write(f"{str(os.getpid())}")
             file.close()
             inicjalna=False
             klasawysylka=KlasaWysylka(inicjalna)
         else:
-            drukuj("BRAK SCIESZKI - sprawdż czy .env i folder roboczy wiedza o swoim istnieniu")
+            drukuj("notposix - pewnie windows - wez to czlowieku oprogramuj")
+            przerwij_i_wyswietl_czas()
     except ExceptionEnvProjektu as e:
         drukuj(f"exception {e}")
         drukuj(f"sprawdz czy dobrze wpisales dane w .env (albo czy w ogole je wpisales ...)")
@@ -523,13 +539,11 @@ def main():
     except Exception as e:
         drukuj(f"exception {e}")
         drukuj(f"sprawdz czy .env widziany jest w crontabie")
-        #os.remove(fal)
         traceback.print_exc()
     if os.path.isdir(basic_path_ram):
         if os.path.exists(flara_skryptu):
             os.remove(flara_skryptu)
             drukuj("usuwam flare")
-
 
 if __name__ == "__main__":
     main()

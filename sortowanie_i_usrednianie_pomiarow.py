@@ -11,6 +11,8 @@ import json
 import time
 from dotenv import load_dotenv
 
+from petla_programu import file_istnienie
+
 def nazwa_programu():
     return "sortowanie_i_usrednianie_pomiarow.py"
 
@@ -201,49 +203,64 @@ class SortoUsredniacz(object):
         format_daty_docelowy=datetime.strftime(obj_datetime, "%d/%m/%y %H:%M:%S")
         return format_daty_docelowy
 
+def file_istnienie(path_to_file, komunikat):
+    if os.path.isdir(path_to_file):
+        drukuj(f"{komunikat}")
+        raise ExceptionEnvProjektu
+    return True
+
+def folder_istnienie(path_to_folder, komunikat):
+    if os.path.isdir(path_to_folder):
+        drukuj(f"{komunikat}")
+        raise ExceptionEnvProjektu
+    return True
+
+def zmienna_env_file(tag_in_env, komunikat):
+    path_to_file=os.getenv(tag_in_env)
+    if os.path.exists(path_to_file) == False:
+        drukuj(f"{komunikat}, tag:{tag_in_env}, path:{path_to_file}")#sprawdz czy plik .env istnieje")
+        raise ExceptionEnvProjektu
+    return path_to_file
+
+def zmienna_env_folder(tag_in_env, komunikat):
+    path_to_folder=os.getenv(tag_in_env)
+    if os.path.isdir(path_to_folder) == False:
+        drukuj(f"{komunikat}, tag:{tag_in_env}, path:{path_to_folder}")#sprawdz czy plik .env istnieje")
+        raise ExceptionEnvProjektu
+    return path_to_folder
+
 def main():
     basic_path_ram=""
     flara_skryptu=""
     try:
         drukuj(f"------{nazwa_programu()}--------")
-        dotenv_path="./.env"
-        if os.path.exists(dotenv_path) == False:
-            drukuj("sprawdz czy plik .env istnieje")
-            raise ExceptionEnvProjektu
-        load_dotenv(dotenv_path)
-        if os.name == "posix":
+        if os.name=="posix":
             drukuj("posix")
-            basic_path_ram=os.getenv('basic_path_ram')
-            if os.path.isdir(basic_path_ram)==False:
-                drukuj(f".env - sprawdz basic_path_ram {basic_path_ram}")
-                raise ExceptionEnvProjektu
-            drukuj(f"basic_path_ram: {basic_path_ram}")
+            dotenv_path="./.env"
+            file_istnienie(dotenv_path, "sprawdz czy plik .env istnieje")
+            load_dotenv(dotenv_path)
+            basic_path_ram=zmienna_env_folder("basic_path_ram", ".env - sprawdz basic_path_ram")
+            
+            iteracji=0
+            while True:
+                if iteracji < 3:
+                    iteracji=iteracji+1
+                else:
+                    drukuj("przerwij")
+                    break
+                flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
+                with open(flara_skryptu, "w") as file:
+                    file.write(f"{str(os.getpid())}")
+                file.close()
+                inicjalna=False
+                if os.path.exists(f"{basic_path_ram}/pomiary.txt.old"):
+                    sortousredniacz=SortoUsredniacz(inicjalna)
+                    break
+                else:
+                    drukuj("brak pomiaru")
+                time.sleep(1)
         else:
-            drukuj("notposix - pewnie windows - wez to czlowieku oprogramuj")
-            przerwij_i_wyswietl_czas()
-        iteracji=0
-        while True:
-            if iteracji < 3:
-                iteracji=iteracji+1
-            else:
-                drukuj("przerwij")
-                break
-            #if os.path.exists("run/user/1000/skrypt_rtl433.sh.txt") == False:
-            flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
-            with open(flara_skryptu, "w") as file:
-                file.write(f"{str(os.getpid())}")
-            file.close()
-            inicjalna=False
-            if os.path.exists(f"{basic_path_ram}/pomiary.txt.old"):
-                sortousredniacz=SortoUsredniacz(inicjalna)
-                break
-            else:
-                drukuj("brak pomiaru")
-            time.sleep(1)
-            #klasawysylka=KlasaWysylka(inicjalna)
-        if os.path.exists(flara_skryptu):
-            os.remove(flara_skryptu)
-            drukuj("usuwam flare")
+            drukuj("oprogramuj tego windowsa ziom")
     except ExceptionEnvProjektu as e:
         drukuj(f"exception {e}")
         drukuj(f"sprawdz czy dobrze wpisales dane w .env (albo czy w ogole je wpisales ...)")
