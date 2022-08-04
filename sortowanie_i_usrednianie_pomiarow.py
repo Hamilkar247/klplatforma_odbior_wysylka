@@ -37,6 +37,34 @@ def przerwij_i_wyswietl_czas():
 class ExceptionEnvProjektu(Exception):
     pass
 
+def file_istnienie(path_to_file, komunikat):
+    if os.path.isdir(path_to_file):
+        drukuj(f"{komunikat}")
+        raise ExceptionEnvProjektu
+    return True
+
+def folder_istnienie(path_to_folder, komunikat):
+    if os.path.isdir(path_to_folder):
+        drukuj(f"{komunikat}")
+        raise ExceptionEnvProjektu
+    return True
+
+def zmienna_env_file(tag_in_env, komunikat):
+    path_to_file=os.getenv(tag_in_env)
+    if os.path.exists(path_to_file) == False:
+        drukuj(f"{komunikat}, tag:{tag_in_env}, path:{path_to_file}")#sprawdz czy plik .env istnieje")
+        raise ExceptionEnvProjektu
+    return path_to_file
+
+def zmienna_env_folder(tag_in_env, komunikat):
+    path_to_folder=os.getenv(tag_in_env)
+    if os.path.isdir(path_to_folder) == False:
+        drukuj(f"{komunikat}, tag:{tag_in_env}, path:{path_to_folder}")#sprawdz czy plik .env istnieje")
+        raise ExceptionEnvProjektu
+    return path_to_folder
+
+#############
+
 class SortoUsredniacz(object):
     def __init__(self, inicjalna):
         self.interval=2
@@ -202,32 +230,6 @@ class SortoUsredniacz(object):
         #drukuj("====================================")
         format_daty_docelowy=datetime.strftime(obj_datetime, "%d/%m/%y %H:%M:%S")
         return format_daty_docelowy
-
-def file_istnienie(path_to_file, komunikat):
-    if os.path.isdir(path_to_file):
-        drukuj(f"{komunikat}")
-        raise ExceptionEnvProjektu
-    return True
-
-def folder_istnienie(path_to_folder, komunikat):
-    if os.path.isdir(path_to_folder):
-        drukuj(f"{komunikat}")
-        raise ExceptionEnvProjektu
-    return True
-
-def zmienna_env_file(tag_in_env, komunikat):
-    path_to_file=os.getenv(tag_in_env)
-    if os.path.exists(path_to_file) == False:
-        drukuj(f"{komunikat}, tag:{tag_in_env}, path:{path_to_file}")#sprawdz czy plik .env istnieje")
-        raise ExceptionEnvProjektu
-    return path_to_file
-
-def zmienna_env_folder(tag_in_env, komunikat):
-    path_to_folder=os.getenv(tag_in_env)
-    if os.path.isdir(path_to_folder) == False:
-        drukuj(f"{komunikat}, tag:{tag_in_env}, path:{path_to_folder}")#sprawdz czy plik .env istnieje")
-        raise ExceptionEnvProjektu
-    return path_to_folder
 
 def main():
     basic_path_ram=""

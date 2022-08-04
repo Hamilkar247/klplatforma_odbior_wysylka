@@ -31,31 +31,6 @@ def przerwij_i_wyswietl_czas():
 class ExceptionEnvProjektu(Exception):
     pass
 
-def start():
-    basic_path_ram=os.getenv("basic_path_ram")
-    vendor_id=0x0bda
-    product_id=0x2838
-    try:
-        dev = finddev(idVendor=vendor_id, idProduct=product_id)
-        print(f"dev: {dev}")
-        dev.reset()
-        print("dokonano resetu na podanym porcie")
-        with open(f"{basic_path_ram}/reset_portu_usb.py.log", "w") as f:
-            f.write("\n")
-        error_file=f"{basic_path_ram}/reset_portu_usb.py.error"
-        if os.path.exists(error_file):
-            os.remove(error_file)
-    except Exception as e:
-        print(f"mozliwy brak odczytu rtl-sdr na portach usb - sprawdz lsusb czy sa takie numery fabryczne {vendor_id} {product_id}")
-        print(f"Exception {e}")
-        traceback.print_exc()
-        with open(f"{basic_path_ram}/reset_portu_usb.py.log", "a") as f:
-            f.write(f"{data_i_godzina()}")
-            f.write("\n")
-        with open(f"{basic_path_ram}/reset_portu_usb.py.error", "a") as f:
-            f.write(f"{data_i_godzina()}")
-            f.write("\n")
-
 def file_istnienie(path_to_file, komunikat):
     if os.path.isdir(path_to_file):
         drukuj(f"{komunikat}")
@@ -81,6 +56,33 @@ def zmienna_env_folder(tag_in_env, komunikat):
         drukuj(f"{komunikat}, tag:{tag_in_env}, path:{path_to_folder}")#sprawdz czy plik .env istnieje")
         raise ExceptionEnvProjektu
     return path_to_folder
+
+###############
+
+def start():
+    basic_path_ram=os.getenv("basic_path_ram")
+    vendor_id=0x0bda
+    product_id=0x2838
+    try:
+        dev = finddev(idVendor=vendor_id, idProduct=product_id)
+        print(f"dev: {dev}")
+        dev.reset()
+        print("dokonano resetu na podanym porcie")
+        with open(f"{basic_path_ram}/reset_portu_usb.py.log", "w") as f:
+            f.write("\n")
+        error_file=f"{basic_path_ram}/reset_portu_usb.py.error"
+        if os.path.exists(error_file):
+            os.remove(error_file)
+    except Exception as e:
+        print(f"mozliwy brak odczytu rtl-sdr na portach usb - sprawdz lsusb czy sa takie numery fabryczne {vendor_id} {product_id}")
+        print(f"Exception {e}")
+        traceback.print_exc()
+        with open(f"{basic_path_ram}/reset_portu_usb.py.log", "a") as f:
+            f.write(f"{data_i_godzina()}")
+            f.write("\n")
+        with open(f"{basic_path_ram}/reset_portu_usb.py.error", "a") as f:
+            f.write(f"{data_i_godzina()}")
+            f.write("\n")
 
 def main():
     basic_path_ram=""

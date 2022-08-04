@@ -2,14 +2,11 @@
 
 from inspect import trace
 import urllib.request, json
-import hashlib
 import sys
-import shutil
 import os
 import datetime
 import traceback
 from dotenv import load_dotenv
-import uuid
 import psutil
 
 def nazwa_programu():
@@ -69,6 +66,8 @@ def numer_seryjny_raspberki():
     #ucinam ostatni bit z czymś takim - \u0000
     #powinniśmy dostać coś w tym stylu
     return sn[0][0:-1]
+
+#################
 
 def get_mac_address():
     drukuj("def: get_mac_address")

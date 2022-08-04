@@ -59,6 +59,8 @@ def zmienna_env_folder(tag_in_env, komunikat):
         raise ExceptionEnvProjektu
     return path_to_folder
 
+##################
+
 def start(file_path, nazwa_flary, czas_dzialania):
     basic_path_ram=os.getenv("basic_path_ram")
     if os.path.exists(file_path):

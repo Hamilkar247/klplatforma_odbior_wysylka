@@ -60,6 +60,7 @@ def zmienna_env_folder(tag_in_env, komunikat):
         raise ExceptionEnvProjektu
     return path_to_folder
 
+############################
 
 def start(basic_path_ram):
     drukuj(" - - - - - - -")

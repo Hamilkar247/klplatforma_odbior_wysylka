@@ -68,6 +68,8 @@ def zmienna_env_folder(tag_in_env, komunikat):
         raise ExceptionEnvProjektu
     return path_to_folder
 
+##############
+
 class KlasaWysylka(object):
     def __init__(self, inicjalna):
         #flagi do statusu
