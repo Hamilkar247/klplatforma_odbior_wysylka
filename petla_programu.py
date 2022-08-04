@@ -1,5 +1,6 @@
 # - *- coding: utf-8 - *-
 
+from genericpath import isdir
 from inspect import trace
 import os
 import sys
@@ -160,6 +161,9 @@ def start():
         drukuj(f"Błąd: {e}")
         traceback.print_exc()
 
+class ExceptionEnvProjektu(Exception):
+    pass
+
 def main():
     basic_path_ram=""
     flara_skryptu=""
@@ -167,7 +171,19 @@ def main():
         drukuj(f"------{nazwa_programu()}--------")
         if os.name=="posix":
             drukuj("posix")
+            dotenv_path="./.env"
+            if os.path.exists(dotenv_path) == False:
+                drukuj("dotenv_path - coś nie tak")
+                raise ExceptionEnvProjektu
+            load_dotenv(dotenv_path)
             basic_path_ram="/run/user/1000"
+            if os.path.isdir(basic_path_ram) == False:
+                drukuj("basic_path_ram - coś nie tak")
+                raise ExceptionEnvProjektu
+            path_to_config=os.getenv("path_to_config")
+            if os.path.isdir(path_to_config) == False:
+                drukuj("path_to_config - coś nie tak")
+                raise ExceptionEnvProjektu
         flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
         flara_file=open(flara_skryptu, "w")
         flara_file.write(f"{str(os.getpid())}")
@@ -175,15 +191,17 @@ def main():
         start()
         if os.path.exists(flara_skryptu):
             os.remove(flara_skryptu)
+    except ExceptionEnvProjektu as e:
+        drukuj(f"exception {e}")
+        drukuj(f"czy napewno skopiowales .env.example i podmieniles tam scieszki na takie jakie maja byc w programie?")
+        traceback.print_exc()
     except Exception as e:
         drukuj(f"exception {e}")
         drukuj(f"sprawdz czy .env widziany jest w crontabie")
-        #os.remove(fal)
         traceback.print_exc()
         if os.path.isdir(basic_path_ram):
             os.remove(flara_skryptu)
             drukuj("usuwam flare")
 
 if __name__ == '__main__':
-
     main()

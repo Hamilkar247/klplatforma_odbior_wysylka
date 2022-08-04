@@ -69,7 +69,6 @@ def get_mac_address():
 #         drukuj(traceback.print_exc())
 #         return "NONE"
 
-
 class PobranieOutsystem(object):
     def __init__(self):
         pass
