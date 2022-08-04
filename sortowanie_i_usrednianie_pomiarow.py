@@ -11,8 +11,6 @@ import json
 import time
 from dotenv import load_dotenv
 
-from petla_programu import file_istnienie
-
 def nazwa_programu():
     return "sortowanie_i_usrednianie_pomiarow.py"
 
