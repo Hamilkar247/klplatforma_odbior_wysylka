@@ -60,6 +60,12 @@ def zmienna_env_folder(tag_in_env, komunikat):
         raise ExceptionEnvProjektu
     return path_to_folder
 
+def usun_flare(folder_do_sprawdzenia, flara_do_sprawdzenia):
+    if os.path.isdir(folder_do_sprawdzenia):
+        if os.path.exists(flara_do_sprawdzenia):
+            os.remove(flara_do_sprawdzenia)
+            drukuj("usuwam flare")
+
 ############################
 
 def start(basic_path_ram):
@@ -116,19 +122,28 @@ def main():
             start(basic_path_ram)
         else:
             drukuj("oprogramuj tego windowsa w koncu")
+        if os.path.isdir(basic_path_ram):
+            if os.path.exists(flara_skryptu):
+                os.remove(flara_skryptu)
+                drukuj("usuwam flare")
     except ExceptionEnvProjektu as e:
         drukuj(f"exception {e}")
         drukuj(f"sprawdz czy dobrze wpisales dane w .env (albo czy w ogole je wpisales ...)")
         traceback.print_exc()
+        if os.path.isdir(basic_path_ram):
+            if os.path.exists(flara_skryptu):
+                os.remove(flara_skryptu)
+                drukuj("usuwam flare")
     except Exception as e:
         drukuj(f"exception {e}")
         drukuj(f"zwskazowka do czytającego - sprawdz czy .env widziany jest w crontabie")
         #os.remove(fal)
         traceback.print_exc()
-    if os.path.isdir(basic_path_ram):
-        if os.path.exists(flara_skryptu):
-            os.remove(flara_skryptu)
-            drukuj("usuwam flare")
+        if os.path.isdir(basic_path_ram):
+            if os.path.exists(flara_skryptu):
+                os.remove(flara_skryptu)
+                drukuj("usuwam flare")
+
 
 if __name__ == "__main__":
     main()

@@ -59,10 +59,16 @@ def zmienna_env_folder(tag_in_env, komunikat):
         raise ExceptionEnvProjektu
     return path_to_folder
 
+def usun_flare(folder_do_sprawdzenia, flara_do_sprawdzenia):
+    if os.path.isdir(folder_do_sprawdzenia):
+        if os.path.exists(flara_do_sprawdzenia):
+            os.remove(flara_do_sprawdzenia)
+            drukuj("usuwam flare")
+
 ##################
 
 def start(file_path, nazwa_flary, czas_dzialania):
-    basic_path_ram=os.getenv("basic_path_ram")
+    basic_path_ram=zmienna_env_file("basic_path_ram", "cos nie tak z basic_path_ram")
     if os.path.exists(file_path):
         file=open(file_path, "r")
         numer_pid=file.read()
@@ -108,9 +114,9 @@ def flary_do_sprawdzenia():
                 ["zaciaganie_plikow_z_outsystemu.py.flara", 480],
                 ["sortowanie_i_usrednianie_pomiarow.py.flara", 480]
                 ]
+        basic_path_ram=""
+        file_path=""
         if os.name == "posix":
-            basic_path_ram=""
-            file_path=""
             drukuj("posix")
             dotenv_path="./.env"
             file_istnienie(dotenv_path, "dotenv_path - coś nie tak")

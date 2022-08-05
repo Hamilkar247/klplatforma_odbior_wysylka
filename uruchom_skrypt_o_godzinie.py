@@ -59,6 +59,12 @@ def zmienna_env_folder(tag_in_env, komunikat):
         raise ExceptionEnvProjektu
     return path_to_folder
 
+def usun_flare(folder_do_sprawdzenia, flara_do_sprawdzenia):
+    if os.path.isdir(folder_do_sprawdzenia):
+        if os.path.exists(flara_do_sprawdzenia):
+            os.remove(flara_do_sprawdzenia)
+            drukuj("usuwam flare")
+
 ####################################
 
 def sprawdz_program_o_tym_pid_dziala(pid):
@@ -119,6 +125,7 @@ def main():
                 if psutil.pid_exists(pid) == True:
                     drukuj("skrypt istnieje i działa - więc nie uruchamiam")
                 else:
+                    #jak widać byla flara ale jej proces juz umarl
                     os.remove(flara_skryptu)
                     drukuj("usuwam plik flary i startujemy na nowo program")
                     start(flara_skryptu)
@@ -128,14 +135,12 @@ def main():
         drukuj(f"exception {e}")
         drukuj(f"czy napewno skopiowales .env.example i podmieniles tam scieszki na takie jakie maja byc w programie?")
         traceback.print_exc()
+        usun_flare(basic_path_ram, flara_skryptu)
     except Exception as e:
         drukuj(f"exception {e}")
         drukuj(f"sprawdz czy .env widziany jest w crontabie")
         traceback.print_exc()
-    if os.path.isdir(basic_path_ram):
-        if os.path.exists(flara_skryptu):
-            os.remove(flara_skryptu)
-            drukuj("usuwam flare")
+        usun_flare(basic_path_ram, flara_skryptu)
 
 if __name__ == '__main__':
     main()

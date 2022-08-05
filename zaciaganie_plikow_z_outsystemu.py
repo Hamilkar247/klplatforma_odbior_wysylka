@@ -59,6 +59,14 @@ def zmienna_env_folder(tag_in_env, komunikat):
         raise ExceptionEnvProjektu
     return path_to_folder
 
+def usun_flare(folder_do_sprawdzenia, flara_do_sprawdzenia):
+    if os.path.isdir(folder_do_sprawdzenia):
+        if os.path.exists(flara_do_sprawdzenia):
+            os.remove(flara_do_sprawdzenia)
+            drukuj("usuwam flare")
+
+####################
+
 def numer_seryjny_raspberki():
     sn=[]
     with open("/sys/firmware/devicetree/base/serial-number", "r") as plik_numer_seryjny:
@@ -66,8 +74,6 @@ def numer_seryjny_raspberki():
     #ucinam ostatni bit z czymś takim - \u0000
     #powinniśmy dostać coś w tym stylu
     return sn[0][0:-1]
-
-#################
 
 def get_mac_address():
     drukuj("def: get_mac_address")
@@ -234,18 +240,19 @@ def main():
             pobieranie_plikow_z_serwera()
         else:
             drukuj("oprogramowanie tego Windowsa ziom")
+        usun_flare(basic_path_ram, flara_skryptu)
+
     except ExceptionEnvProjektu as e:
         drukuj(f"exception {e}")
         drukuj(f"sprawdz czy dobrze wpisales dane w .env (albo czy w ogole je wpisales ...)")
         traceback.print_exc()
+        usun_flare(basic_path_ram, flara_skryptu)
+
     except Exception as e:
         drukuj(f"exception {e}")
         drukuj(f"sprawdz czy .env widziany jest w crontabie")
         traceback.print_exc()
-    if os.path.isdir(basic_path_ram):
-        if os.path.exists(flara_skryptu): 
-            os.remove(flara_skryptu)
-            drukuj("usuwam flare")
+        usun_flare(basic_path_ram, flara_skryptu)
 
 if __name__ == "__main__":
     main()
