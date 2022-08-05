@@ -109,7 +109,7 @@ def start(file_path, nazwa_flary, czas_dzialania):
 def flary_do_sprawdzenia():
     try:
         lista = [
-                ["pomiar_rtl_433.py.flara", 80],
+                ["pomiar_rtl_433.py.flara", 48000],
                 ["wysylanie_pomiarow_do_outsystem.py.flara", 480],
                 ["zaciaganie_plikow_z_outsystemu.py.flara", 480],
                 ["sortowanie_i_usrednianie_pomiarow.py.flara", 480]
