@@ -34,6 +34,9 @@ def przerwij_i_wyswietl_czas():
 class ExceptionEnvProjektu(Exception):
     pass
 
+class ExceptionWindows(Exception):
+    pass
+
 def file_istnienie(path_to_file, komunikat):
     if os.path.isdir(path_to_file):
         drukuj(f"{komunikat}")
@@ -67,7 +70,6 @@ def usun_flare(folder_do_sprawdzenia, flara_do_sprawdzenia):
             drukuj("usuwam flare")
 
 ############################
-
 
 def start(basic_path_ram):
     drukuj(" - - - - - - -")

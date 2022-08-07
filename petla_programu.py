@@ -43,6 +43,9 @@ def przerwij_i_wyswietl_czas():
 class ExceptionEnvProjektu(Exception):
     pass
 
+class ExceptionWindows(Exception):
+    pass
+
 def file_istnienie(path_to_file, komunikat):
     if os.path.isdir(path_to_file):
         drukuj(f"{komunikat}")
@@ -74,6 +77,11 @@ def usun_flare(folder_do_sprawdzenia, flara_do_sprawdzenia):
         if os.path.exists(flara_do_sprawdzenia):
             os.remove(flara_do_sprawdzenia)
             drukuj("usuwam flare")
+
+def stworz_flare_z_pid(flara_path):
+    flara_file=open(flara_path, "w")
+    flara_file.write(f"{str(os.getpid())}")
+    flara_file.close()
 
 ##################
 
@@ -161,7 +169,7 @@ def start():
                                           interval=0.5))
         watki.append(thread_with_exception(name="pomiar_rtl_433",
                                            target=pomiar_rtl_433.main,
-                                           interval=1))
+                                           interval=100))
         watki.append(thread_with_exception(name="wysylka", 
                                           target=wysylanie_pomiarow_do_outsystem.main,
                                           interval=1))
@@ -212,9 +220,7 @@ def main():
             path_to_config=zmienna_env_folder("path_to_config", "path_to_config - coś nie tak")
             
             flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
-            flara_file=open(flara_skryptu, "w")
-            flara_file.write(f"{str(os.getpid())}")
-            flara_file.close()
+            stworz_flare_z_pid(flara_skryptu)
             start()
         else:
             drukuj("oprogramuj tego windowsa ziom")

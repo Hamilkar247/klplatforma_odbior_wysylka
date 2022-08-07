@@ -33,6 +33,9 @@ def przerwij_i_wyswietl_czas():
 class ExceptionEnvProjektu(Exception):
     pass
 
+class ExceptionWindows(Exception):
+    pass
+
 def file_istnienie(path_to_file, komunikat):
     if os.path.isdir(path_to_file):
         drukuj(f"{komunikat}")
@@ -96,7 +99,7 @@ def start(file_path, nazwa_flary, czas_dzialania):
                     drukuj("po killowaniu")
                     #
                     #return 
-                    with open(f"{basic_path_ram}/ubijaj_procesy.py.ubite", "w") as f:
+                    with open(f"{basic_path_ram}/ubijaj_procesy.py.ubite.log", "w") as f:
                         f.write("\n")
                 else:
                     pass

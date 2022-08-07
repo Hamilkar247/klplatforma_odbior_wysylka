@@ -33,6 +33,9 @@ def przerwij_i_wyswietl_czas():
 class ExceptionEnvProjektu(Exception):
     pass
 
+class ExceptionWindows(Exception):
+    pass
+
 def file_istnienie(path_to_file, komunikat):
     if os.path.isdir(path_to_file):
         drukuj(f"{komunikat}")
@@ -109,10 +112,10 @@ def main():
             dotenv_path = "./.env"
             file_istnienie(dotenv_path, "dotenv_path - coś nie tak")
             load_dotenv(dotenv_path)
-            begin_path_ram=zmienna_env_folder("basic_path_ram","basic_path_ram - coś nie tak")
+            basic_path_ram=zmienna_env_folder("basic_path_ram","basic_path_ram - coś nie tak")
            
             drukuj(f"{os.getpid()}")
-            flara_skryptu=(f"{begin_path_ram}/{nazwa_programu()}.flara")
+            flara_skryptu=(f"{basic_path_ram}/{nazwa_programu()}.flara")
             if os.path.isfile(flara_skryptu) == False:
                 start(flara_skryptu)
             else:
