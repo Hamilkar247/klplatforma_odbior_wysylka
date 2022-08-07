@@ -113,30 +113,39 @@ def main():
             file_istnienie(dotenv_path, "dotenv_path - coś nie tak")
             load_dotenv(dotenv_path)
             basic_path_ram=zmienna_env_folder("basic_path_ram","basic_path_ram - coś nie tak")
-           
             drukuj(f"{os.getpid()}")
-            flara_skryptu=(f"{basic_path_ram}/{nazwa_programu()}.flara")
-            if os.path.isfile(flara_skryptu) == False:
-                start(flara_skryptu)
-            else:
-                drukuj("flara skryptu istnieje")
-                with open(flara_skryptu, "r") as file:
-                    linie=file.readline()
-                pid=int(linie)
-                #dziala_flaga=sprawdz_program_o_tym_pid_dziala(pid)
-                print(pid)
-                if psutil.pid_exists(pid) == True:
-                    drukuj("skrypt istnieje i działa - więc nie uruchamiam")
-                else:
-                    #jak widać byla flara ale jej proces juz umarl
-                    os.remove(flara_skryptu)
-                    drukuj("usuwam plik flary i startujemy na nowo program")
+            path_preflara=f"{basic_path_ram}/uruchom_skrypty_klraspi.preflara"
+            if os.path.exists(path_preflara) == True:
+                flara_skryptu=(f"{basic_path_ram}/{nazwa_programu()}.flara")
+                if os.path.isfile(flara_skryptu) == False:
                     start(flara_skryptu)
+                else:
+                    drukuj("flara skryptu istnieje")
+                    with open(flara_skryptu, "r") as file:
+                        linie=file.readline()
+                    pid=int(linie)
+                    #dziala_flaga=sprawdz_program_o_tym_pid_dziala(pid)
+                    print(pid)
+                    if psutil.pid_exists(pid) == True:
+                        drukuj("skrypt istnieje i działa - więc nie uruchamiam")
+                    else:
+                        #jak widać byla flara ale jej proces juz umarl
+                        os.remove(flara_skryptu)
+                        drukuj("usuwam plik flary i startujemy na nowo program")
+                        start(flara_skryptu)
+            else: 
+                drukuj("czekam na skrypt update_projektu_skryptu_klraspi/utrzymanie_wersji.py")
         else:
             drukuj("obsluz tego windowsa ziom")
+            raise ExceptionWindows
     except ExceptionEnvProjektu as e:
         drukuj(f"exception {e}")
         drukuj(f"czy napewno skopiowales .env.example i podmieniles tam scieszki na takie jakie maja byc w programie?")
+        traceback.print_exc()
+        usun_flare(basic_path_ram, flara_skryptu)
+    except ExceptionWindows as e:
+        drukuj(f"exception {e}")
+        drukuj(f"Brak wersji oprogramowania na windowsa - wymaga analizy i/lub dopisania kodu")
         traceback.print_exc()
         usun_flare(basic_path_ram, flara_skryptu)
     except Exception as e:
