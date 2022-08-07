@@ -496,7 +496,7 @@ class KlasaWysylka(object):
                             with open(f"{self.basic_path_ram}/wysylka.log", "a") as logi:
                                 logi.write(f"plik: {plik}\n")
                                 logi.write(f"status_code:{slownik_response['status_code']}")
-                                logi.write(f"sukces_zapisu:{slownik_response['sukces_zapisu']}")
+                                logi.write(f"sukces_zapisu:{slownik_response['sukces_zapisu']}\n")
                             with open(f"{self.basic_path_ram}/status.log", "a") as status_logi:
                                 status_logi.write(f"------------------\n")
                                 status_logi.write(f"{data_i_godzina()}\n")
