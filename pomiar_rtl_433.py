@@ -83,12 +83,13 @@ def start(basic_path_ram):
             file=open(file_path, "a")
             file.write(f"{line}")
             file.close()
-            print(f"{minuta}")
+            drukuj(f"minuta:{minuta}")
             obecna_minuta=datetime.now().minute
             if minuta != obecna_minuta:
+                drukuj("kopiuje plik")
                 minuta = obecna_minuta
                 shutil.copyfile(file_path, file_path+".old")
-            
+                os.remove(file_path)
             #print(line, end="")
             
             #print(line,end="")
