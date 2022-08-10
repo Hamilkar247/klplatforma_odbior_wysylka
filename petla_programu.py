@@ -1,5 +1,6 @@
 # - *- coding: utf-8 - *-
 
+from distutils.command.config import config
 from genericpath import isdir
 from inspect import trace
 import os
@@ -178,7 +179,7 @@ def start():
                                           interval=5))
         watki.append(thread_with_exception(name="ubijaj_procesy",
                                            target=ubijaj_procesy.main,
-                                           interval=3))
+                                           interval=5))
 
         while True:
             print("-------------------------------")
@@ -217,7 +218,12 @@ def main():
             file_istnienie(dotenv_path, "dotenv_path - coś nie tak")
             load_dotenv(dotenv_path)
             basic_path_ram=zmienna_env_folder("basic_path_ram","basic_path_ram - coś nie tak")
-            path_to_config=zmienna_env_folder("path_to_config", "path_to_config - coś nie tak")
+            config_folder="config_klraspi"
+            if os.path.isdir(f"../{config_folder}") == False:
+                os.mkdir(f"../{config_folder}")
+            #rozbija na scieszke i ogon - a wiec reszte scieszki i koncowy element
+            head, tail = os.path.split(os.getcwd())
+            path_to_config=f"{head}/{config_folder}" #zmienna_env_folder("path_to_config", "path_to_config - coś nie tak")
             
             flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
             stworz_flare_z_pid(flara_skryptu)

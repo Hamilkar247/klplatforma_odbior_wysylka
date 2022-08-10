@@ -33,6 +33,9 @@ def przerwij_i_wyswietl_czas():
 class ExceptionEnvProjektu(Exception):
     pass
 
+class ExceptionExistFolder(Exception):
+    pass
+
 class ExceptionWindows(Exception):
     pass
 
@@ -47,6 +50,12 @@ def folder_istnienie(path_to_folder, komunikat):
         drukuj(f"{komunikat}")
         raise ExceptionEnvProjektu
     return True
+
+def folder_istnienie_2(path_to_folder, komunikat):
+    if os.path.isdir(path_to_folder):
+        drukuj(f"{komunikat}")
+        raise ExceptionExistFolder
+    return path_to_folder
 
 def zmienna_env_file(tag_in_env, komunikat):
     path_to_file=os.getenv(tag_in_env)
@@ -113,7 +122,9 @@ class PobranieOutsystem(object):
         #przykład zawartosci /home/klraspi/skrypty_klraspi
         self.basic_path_project=os.getenv('basic_path_project')
         #przykładowa zawartosc /home/klraspi/config/urzadzenia
-        self.path_to_config=os.getenv('path_to_config')
+        config_folder="config_klraspi"
+        head, tail = os.path.split(os.getcwd())
+        self.path_to_config=folder_istnienie_2(f"{head}/{config_folder}", "nie ma folderu do configu! sprawdz czy istnieje!")
 
     def plik_z_alarmami(self):
         url=f"{self.url_do_pobrania_alarmow}{get_mac_address()}"
