@@ -30,6 +30,8 @@ def przerwij_i_wyswietl_czas():
     print("Current Time =", current_time)
     sys.exit()
 
+#######################3
+
 class ExceptionEnvProjektu(Exception):
     pass
 
@@ -76,6 +78,12 @@ def usun_flare(folder_do_sprawdzenia, flara_do_sprawdzenia):
         if os.path.exists(flara_do_sprawdzenia):
             os.remove(flara_do_sprawdzenia)
             drukuj("usuwam flare")
+
+def stworz_flare_z_pid(flara_path):
+    flara_file=open(flara_path, "w")
+    flara_file.write(f"{str(os.getpid())}")
+    flara_file.close()
+
 
 ####################################
 
