@@ -126,7 +126,6 @@ class PobranieOutsystem(object):
         head, tail = os.path.split(os.getcwd())
         drukuj(f"config_folder:  {head}/{config_folder}")
         self.path_to_config=folder_istnienie_2(f"{head}/{config_folder}", "nie ma folderu do configu! sprawdz czy istnieje!")
-        przerwij_i_wyswietl_czas()
 
     def plik_z_alarmami(self):
         url=f"{self.url_do_pobrania_alarmow}{get_mac_address()}"
