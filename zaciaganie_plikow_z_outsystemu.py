@@ -13,7 +13,7 @@ def nazwa_programu():
     return "zaciaganie_plikow_z_outsystemu.py"
 
 def data_i_godzina():
-    now = datetime.datetime.now()
+    now = datetime.now()
     current_time = now.strftime("%d/%m/%y %H:%M:%S")
     return current_time
 
