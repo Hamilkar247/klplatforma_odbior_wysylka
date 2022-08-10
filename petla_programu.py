@@ -44,20 +44,29 @@ def przerwij_i_wyswietl_czas():
 class ExceptionEnvProjektu(Exception):
     pass
 
+class ExceptionNotExistFolder(Exception):
+    pass
+
 class ExceptionWindows(Exception):
     pass
 
 def file_istnienie(path_to_file, komunikat):
-    if os.path.isdir(path_to_file):
+    if os.path.exists(path_to_file) == False:
         drukuj(f"{komunikat}")
         raise ExceptionEnvProjektu
     return True
 
 def folder_istnienie(path_to_folder, komunikat):
-    if os.path.isdir(path_to_folder):
+    if os.path.isdir(path_to_folder) == False:
         drukuj(f"{komunikat}")
         raise ExceptionEnvProjektu
     return True
+
+def folder_istnienie_2(path_to_folder, komunikat):
+    if os.path.isdir(path_to_folder) == False:
+        drukuj(f"{komunikat}")
+        raise ExceptionNotExistFolder
+    return path_to_folder
 
 def zmienna_env_file(tag_in_env, komunikat):
     path_to_file=os.getenv(tag_in_env)
@@ -78,12 +87,6 @@ def usun_flare(folder_do_sprawdzenia, flara_do_sprawdzenia):
         if os.path.exists(flara_do_sprawdzenia):
             os.remove(flara_do_sprawdzenia)
             drukuj("usuwam flare")
-
-def stworz_flare_z_pid(flara_path):
-    flara_file=open(flara_path, "w")
-    flara_file.write(f"{str(os.getpid())}")
-    flara_file.close()
-
 ##################
 
 class thread_with_exception(threading.Thread):

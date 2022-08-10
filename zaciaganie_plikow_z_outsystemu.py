@@ -33,28 +33,28 @@ def przerwij_i_wyswietl_czas():
 class ExceptionEnvProjektu(Exception):
     pass
 
-class ExceptionExistFolder(Exception):
+class ExceptionNotExistFolder(Exception):
     pass
 
 class ExceptionWindows(Exception):
     pass
 
 def file_istnienie(path_to_file, komunikat):
-    if os.path.isdir(path_to_file):
+    if os.path.exists(path_to_file) == False:
         drukuj(f"{komunikat}")
         raise ExceptionEnvProjektu
     return True
 
 def folder_istnienie(path_to_folder, komunikat):
-    if os.path.isdir(path_to_folder):
+    if os.path.isdir(path_to_folder) == False:
         drukuj(f"{komunikat}")
         raise ExceptionEnvProjektu
     return True
 
 def folder_istnienie_2(path_to_folder, komunikat):
-    if os.path.isdir(path_to_folder):
+    if os.path.isdir(path_to_folder) == False:
         drukuj(f"{komunikat}")
-        raise ExceptionExistFolder
+        raise ExceptionNotExistFolder
     return path_to_folder
 
 def zmienna_env_file(tag_in_env, komunikat):
@@ -124,7 +124,9 @@ class PobranieOutsystem(object):
         #przykładowa zawartosc /home/klraspi/config/urzadzenia
         config_folder="config_klraspi"
         head, tail = os.path.split(os.getcwd())
+        drukuj(f"config_folder:  {head}/{config_folder}")
         self.path_to_config=folder_istnienie_2(f"{head}/{config_folder}", "nie ma folderu do configu! sprawdz czy istnieje!")
+        przerwij_i_wyswietl_czas()
 
     def plik_z_alarmami(self):
         url=f"{self.url_do_pobrania_alarmow}{get_mac_address()}"

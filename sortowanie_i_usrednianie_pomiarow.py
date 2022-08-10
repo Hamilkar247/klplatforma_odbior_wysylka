@@ -35,20 +35,29 @@ def przerwij_i_wyswietl_czas():
 class ExceptionEnvProjektu(Exception):
     pass
 
+class ExceptionNotExistFolder(Exception):
+    pass
+
 class ExceptionWindows(Exception):
     pass
 
 def file_istnienie(path_to_file, komunikat):
-    if os.path.isdir(path_to_file):
+    if os.path.exists(path_to_file) == False:
         drukuj(f"{komunikat}")
         raise ExceptionEnvProjektu
     return True
 
 def folder_istnienie(path_to_folder, komunikat):
-    if os.path.isdir(path_to_folder):
+    if os.path.isdir(path_to_folder) == False:
         drukuj(f"{komunikat}")
         raise ExceptionEnvProjektu
     return True
+
+def folder_istnienie_2(path_to_folder, komunikat):
+    if os.path.isdir(path_to_folder) == False:
+        drukuj(f"{komunikat}")
+        raise ExceptionNotExistFolder
+    return path_to_folder
 
 def zmienna_env_file(tag_in_env, komunikat):
     path_to_file=os.getenv(tag_in_env)
