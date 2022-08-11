@@ -105,7 +105,7 @@ class PobranieOutsystem(object):
                     file.write(str(content_new))
                     self.fp.drukuj("nasluchiwanie się powiodło - nadpisano plik z alarmami czujników")
                     #logi
-                    logi_do_json_z_alarmami=open(f"{self.basic_path_project}/odebrane_jsony_z_alarmami.json", "a")
+                    logi_do_json_z_alarmami=open(f"{self.basic_path_project}/odebrane_jsony_z_alarmami.json", "a+")
                     logi_do_json_z_alarmami.write(f"{self.fp.data_i_godzina()}")
                     logi_do_json_z_alarmami.write("\n")
                     logi_do_json_z_alarmami.write(str(content_new))
@@ -117,7 +117,7 @@ class PobranieOutsystem(object):
                 file.write(str(content_new))
                 self.fp.drukuj("nasluchiwanie się powiodło - nadpisano plik z alarmami czujników")
                 #logi
-                logi_do_json_z_alarmami=open(f"{self.basic_path_project}/odebrane_jsony_z_alarmami.json", "a")
+                logi_do_json_z_alarmami=open(f"{self.basic_path_project}/odebrane_jsony_z_alarmami.json", "a+")
                 logi_do_json_z_alarmami.write(f"{self.fp.data_i_godzina()}")
                 logi_do_json_z_alarmami.write("\n")
                 logi_do_json_z_alarmami.write(str(content_new))
@@ -154,7 +154,7 @@ class PobranieOutsystem(object):
                     file.write(str(content_new))
                     self.fp.drukuj("nasluchiwanie się powiodło - skopiowano nowy plik z konfiguracją")
                     #logi
-                    logi_do_json_z_konfiguracjami=open(f"{self.basic_path_project}/odebrane_jsony_z_konfiguracjami.json", "a")
+                    logi_do_json_z_konfiguracjami=open(f"{self.basic_path_project}/odebrane_jsony_z_konfiguracjami.json", "a+")
                     logi_do_json_z_konfiguracjami.write("\n")
                     logi_do_json_z_konfiguracjami.write(str(content_new))
                     logi_do_json_z_konfiguracjami.close()
@@ -166,7 +166,7 @@ class PobranieOutsystem(object):
                 file.write(str(content_new))
                 self.fp.drukuj("nasluchiwanie się powiodło - stworzono nowy plik z konfiguracja")
                 #logi
-                logi_do_json_z_konfiguracjami=open(f"{self.basic_path_project}/odebrane_jsony_z_konfiguracjami.json", "a")
+                logi_do_json_z_konfiguracjami=open(f"{self.basic_path_project}/odebrane_jsony_z_konfiguracjami.json", "a+")
                 logi_do_json_z_konfiguracjami.write("\n")
                 logi_do_json_z_konfiguracjami.write(str(content_new))
                 logi_do_json_z_konfiguracjami.close()
