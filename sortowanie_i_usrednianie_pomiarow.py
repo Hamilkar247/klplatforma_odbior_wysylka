@@ -10,86 +10,23 @@ from urllib.request import urlopen
 import json
 import time
 from dotenv import load_dotenv
+from funkcje_pomocnicze import FunkcjePomocnicze, ExceptionEnvProjektu, ExceptionNotExistFolder, ExceptionWindows
+
+####################
 
 def nazwa_programu():
     return "sortowanie_i_usrednianie_pomiarow.py"
 
-def data_i_godzina():
-    now = datetime.now()
-    current_time = now.strftime("%d/%m/%y %H:%M:%S")
-    return current_time
+def funkcje_pomocnicze_inicjalizacja():
+    fp=FunkcjePomocnicze(nazwa_programu())
+    return fp
 
-def drukuj(obiekt_do_wydruku):
-    try:
-        print(data_i_godzina()+" "+nazwa_programu()+" "+str(obiekt_do_wydruku))
-    except Exception as e:
-        print(e)
-        print(traceback.print_exc())
-
-def przerwij_i_wyswietl_czas():
-    czas_teraz = datetime.now()
-    current_time = czas_teraz.strftime("%H:%M:%S")
-    print("Current Time =", current_time)
-    sys.exit()
-
-######################
-
-class ExceptionEnvProjektu(Exception):
-    pass
-
-class ExceptionNotExistFolder(Exception):
-    pass
-
-class ExceptionWindows(Exception):
-    pass
-
-def file_istnienie(path_to_file, komunikat):
-    if os.path.exists(path_to_file) == False:
-        drukuj(f"{komunikat}")
-        raise ExceptionEnvProjektu
-    return True
-
-def folder_istnienie(path_to_folder, komunikat):
-    if os.path.isdir(path_to_folder) == False:
-        drukuj(f"{komunikat}")
-        raise ExceptionEnvProjektu
-    return True
-
-def folder_istnienie_2(path_to_folder, komunikat):
-    if os.path.isdir(path_to_folder) == False:
-        drukuj(f"{komunikat}")
-        raise ExceptionNotExistFolder
-    return path_to_folder
-
-def zmienna_env_file(tag_in_env, komunikat):
-    path_to_file=os.getenv(tag_in_env)
-    if os.path.exists(path_to_file) == False:
-        drukuj(f"{komunikat}, tag:{tag_in_env}, path:{path_to_file}")#sprawdz czy plik .env istnieje")
-        raise ExceptionEnvProjektu
-    return path_to_file
-
-def zmienna_env_folder(tag_in_env, komunikat):
-    path_to_folder=os.getenv(tag_in_env)
-    if os.path.isdir(path_to_folder) == False:
-        drukuj(f"{komunikat}, tag:{tag_in_env}, path:{path_to_folder}")#sprawdz czy plik .env istnieje")
-        raise ExceptionEnvProjektu
-    return path_to_folder
-
-def usun_flare(folder_do_sprawdzenia, flara_do_sprawdzenia):
-    if os.path.isdir(folder_do_sprawdzenia):
-        if os.path.exists(flara_do_sprawdzenia):
-            os.remove(flara_do_sprawdzenia)
-            drukuj("usuwam flare")
-
-def stworz_flare_z_pid(flara_path):
-    flara_file=open(flara_path, "w")
-    flara_file.write(f"{str(os.getpid())}")
-    flara_file.close()
-
-#############
+#####################
 
 class SortoUsredniacz(object):
     def __init__(self, inicjalna):
+        self.fp=funkcje_pomocnicze_inicjalizacja()
+        
         self.interval=2
         self.basic_path_ram=os.getenv("basic_path_ram")
         self.folder_usera=f"{self.basic_path_ram}"
@@ -143,25 +80,25 @@ class SortoUsredniacz(object):
                 file.close()
                 os.remove(f"{self.basic_path_ram}/pomiary.txt.old")
             else:
-                drukuj("brak pliku z pomiarami")
+                self.fp.drukuj("brak pliku z pomiarami")
         except json.decoder.JSONDecodeError as e:
-            drukuj(f"wystapil blad {e}")
+            self.fp.drukuj(f"wystapil blad {e}")
             traceback.print_exc()
-            drukuj("ten problem jest dla mnie nie jasny - kopiuje plik do logow, a problematyczny plik usuwam")
+            self.fp.drukuj("ten problem jest dla mnie nie jasny - kopiuje plik do logow, a problematyczny plik usuwam")
             with open(f"{self.basic_path_ram}/pomiary.txt.old", "r") as file:
                 content=file.read()
             logowy=open(f"{self.basic_path_ram}/usrednianie_json_decoder_errory.log", "a")
-            logowy.write(data_i_godzina() +"\n")
+            logowy.write(self.fp.data_i_godzina() +"\n")
             logowy.write(content)
             os.remove(f"{self.basic_path_ram}/pomiary.txt.old")
         except Exception as e:
-            drukuj(f"Wystapil blad {e}")
+            self.fp.drukuj(f"Wystapil blad {e}")
             traceback.print_exc()
     
     def usrednienie(self, dict_transmitters):
-        drukuj("def: usrednienie")
+        self.fp.drukuj("def: usrednienie")
         file = open(f"{self.basic_path_ram}/sorty.log", "a")
-        file.write(f"{data_i_godzina()}\n")
+        file.write(f"{self.fp.data_i_godzina()}\n")
         for key in dict_transmitters:
             file.write(f"id: {key} : hex({hex(int(key))}) -> liczb.do.usr {len(dict_transmitters[key])}\n")
             if len(dict_transmitters[key]) > 0:
@@ -215,10 +152,10 @@ class SortoUsredniacz(object):
             else:
                 KeyError
         except KeyError as e:
-            drukuj(f"zwracana wartosc musi byc stringiem - czy twoj nim jest? {e}")
+            self.fp.drukuj(f"zwracana wartosc musi byc stringiem - czy twoj nim jest? {e}")
             traceback.print_exc()
         except Exception as e:
-            drukuj(f"mozlwie ze temp nie ma liczby {e}")
+            self.fp.drukuj(f"mozlwie ze temp nie ma liczby {e}")
             traceback.print_exc()
 
     def avg_humd(self, lista_pom_wilg):
@@ -236,10 +173,10 @@ class SortoUsredniacz(object):
             else:
                 KeyError
         except KeyError as e:
-            drukuj(f"zwracana wartosc musi byc intem {e}")
+            self.fp.drukuj(f"zwracana wartosc musi byc intem {e}")
             traceback.print_exc()
         except Exception as e:
-            drukuj(f"mozlwie ze temp nie ma liczby {e}")
+            self.fp.drukuj(f"mozlwie ze temp nie ma liczby {e}")
             traceback.print_exc()
 
     #obecnie nieuzywany - do usunieacia
@@ -255,23 +192,24 @@ class SortoUsredniacz(object):
         return format_daty_docelowy
 
 def main():
+    fp=FunkcjePomocnicze(nazwa_programu())
     basic_path_ram=""
     flara_skryptu=""
     try:
-        drukuj(f"------{nazwa_programu()}--------")
+        fp.drukuj(f"------{nazwa_programu()}--------")
         if os.name=="posix":
-            drukuj("posix")
+            fp.drukuj("posix")
             dotenv_path="./.env"
-            file_istnienie(dotenv_path, "sprawdz czy plik .env istnieje")
+            fp.file_istnienie(dotenv_path, "sprawdz czy plik .env istnieje")
             load_dotenv(dotenv_path)
-            basic_path_ram=zmienna_env_folder("basic_path_ram", ".env - sprawdz basic_path_ram")
+            basic_path_ram=fp.zmienna_env_folder("basic_path_ram", ".env - sprawdz basic_path_ram")
             
             iteracji=0
             while True:
                 if iteracji < 3:
                     iteracji=iteracji+1
                 else:
-                    drukuj("przerwij")
+                    fp.drukuj("przerwij")
                     break
                 flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
                 with open(flara_skryptu, "w") as file:
@@ -282,21 +220,21 @@ def main():
                     sortousredniacz=SortoUsredniacz(inicjalna)
                     break
                 else:
-                    drukuj("brak pomiaru")
+                    fp.drukuj("brak pomiaru")
                 time.sleep(1)
         else:
             drukuj("oprogramuj tego windowsa ziom")
-        usun_flare(basic_path_ram, flara_skryptu)
+        fp.usun_flare(basic_path_ram, flara_skryptu)
     except ExceptionEnvProjektu as e:
-        drukuj(f"exception {e}")
-        drukuj(f"sprawdz czy dobrze wpisales dane w .env (albo czy w ogole je wpisales ...)")
+        fp.drukuj(f"exception {e}")
+        fp.drukuj(f"sprawdz czy dobrze wpisales dane w .env (albo czy w ogole je wpisales ...)")
         traceback.print_exc()
-        usun_flare(basic_path_ram, flara_skryptu)
+        fp.usun_flare(basic_path_ram, flara_skryptu)
     except Exception as e:
-        drukuj(f"exception {e}")
-        drukuj(f"sprawdz czy .env widziany jest w crontabie")
+        fp.drukuj(f"exception {e}")
+        fp.drukuj(f"sprawdz czy .env widziany jest w crontabie")
         traceback.print_exc()
-        usun_flare(basic_path_ram, flara_skryptu)
+        fp.usun_flare(basic_path_ram, flara_skryptu)
 
 if __name__ == "__main__":
     main()

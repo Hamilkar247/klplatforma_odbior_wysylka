@@ -6,37 +6,13 @@ from datetime import datetime, timedelta
 import sys
 import os
 from without_wifi.withoutwifi import WithoutWifi
+from funkcje_pomocnicze import FunkcjePomocnicze, ExceptionEnvProjektu, ExceptionNotExistFolder, ExceptionWindows
+###################33
 
 def nazwa_programu():
     return "gpiozero_test.py"
 
-def data_i_godzina():
-    now = datetime.now()
-    current_time = now.strftime("%d/%m/%y %H:%M:%S")
-    return current_time
-
-def drukuj(obiekt_do_wydruku):
-    try:
-        print(data_i_godzina()+" "+nazwa_programu()+" "+str(obiekt_do_wydruku))
-    except Exception as e:
-        print(e)
-        print(traceback.print_exc())
-
-def przerwij_i_wyswietl_czas():
-    czas_teraz = datetime.now()
-    current_time = czas_teraz.strftime("%H:%M:%S")
-    print("Current Time =", current_time)
-    sys.exit()
-
-# red = LED(4)
-
-# while True:
-#     red.on()
-#     print("wlaczone")
-#     sleep(3)
-#     red.off()
-#     print("wylaczone")
-#     sleep(3)
+######################
 
 class Klasa_GSM(object):
     def __init__(self):

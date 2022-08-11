@@ -13,90 +13,23 @@ import json
 import time
 from dotenv import load_dotenv
 import socket
-import uuid
 import psutil
+from funkcje_pomocnicze import FunkcjePomocnicze, ExceptionEnvProjektu, ExceptionNotExistFolder, ExceptionWindows
 
+###############
 
 def nazwa_programu():
     return "wysylanie_pomiarow_do_outsystem.py"
 
-def data_i_godzina():
-    now = datetime.now()
-    current_time = now.strftime("%d/%m/%y %H:%M:%S")
-    return current_time
+def funkcje_pomocnicze_inicjalizacja():
+    fp=FunkcjePomocnicze(nazwa_programu())
+    return fp
 
-def drukuj(obiekt_do_wydruku):
-    try:
-        print(data_i_godzina()+" "+nazwa_programu()+" "+str(obiekt_do_wydruku))
-    except Exception as e:
-        print("blad w metodzie drukuj - sprawdz czy nie wywolales funkcji bez zadnego parametru")
-        print(e)
-        print(traceback.print_exc())
-
-def przerwij_i_wyswietl_czas():
-    czas_teraz = datetime.now()
-    current_time = czas_teraz.strftime("%H:%M:%S")
-    print("Current Time =", current_time)
-    sys.exit()
-
-############################
-
-class ExceptionEnvProjektu(Exception):
-    pass
-
-class ExceptionNotExistFolder(Exception):
-    pass
-
-class ExceptionWindows(Exception):
-    pass
-
-def file_istnienie(path_to_file, komunikat):
-    if os.path.exists(path_to_file) == False:
-        drukuj(f"{komunikat}")
-        raise ExceptionEnvProjektu
-    return True
-
-def folder_istnienie(path_to_folder, komunikat):
-    if os.path.isdir(path_to_folder) == False:
-        drukuj(f"{komunikat}")
-        raise ExceptionEnvProjektu
-    return True
-
-def folder_istnienie_2(path_to_folder, komunikat):
-    if os.path.isdir(path_to_folder) == False:
-        drukuj(f"{komunikat}")
-        raise ExceptionNotExistFolder
-    return path_to_folder
-
-def zmienna_env_file(tag_in_env, komunikat):
-    path_to_file=os.getenv(tag_in_env)
-    if os.path.exists(path_to_file) == False:
-        drukuj(f"{komunikat}, tag:{tag_in_env}, path:{path_to_file}")#sprawdz czy plik .env istnieje")
-        raise ExceptionEnvProjektu
-    return path_to_file
-
-def zmienna_env_folder(tag_in_env, komunikat):
-    path_to_folder=os.getenv(tag_in_env)
-    if os.path.isdir(path_to_folder) == False:
-        drukuj(f"{komunikat}, tag:{tag_in_env}, path:{path_to_folder}")#sprawdz czy plik .env istnieje")
-        raise ExceptionEnvProjektu
-    return path_to_folder
-
-def usun_flare(folder_do_sprawdzenia, flara_do_sprawdzenia):
-    if os.path.isdir(folder_do_sprawdzenia):
-        if os.path.exists(flara_do_sprawdzenia):
-            os.remove(flara_do_sprawdzenia)
-            drukuj("usuwam flare")
-
-def stworz_flare_z_pid(flara_path):
-    flara_file=open(flara_path, "w")
-    flara_file.write(f"{str(os.getpid())}")
-    flara_file.close()
-
-##############
+###############
 
 class KlasaWysylka(object):
     def __init__(self, inicjalna):
+        self.fp=funkcje_pomocnicze_inicjalizacja()
         #flagi do statusu
         self.flaga_pierwszej_wysylki=False #1 #1
         self.flaga_brak_danych_z_nadajnikow=False #2 #2
@@ -118,7 +51,7 @@ class KlasaWysylka(object):
 
         #flagi_programow
         self.flagi_procesow=False
-        drukuj("class: KlasaWysylka")
+        self.fp.drukuj("class: KlasaWysylka")
         self.basic_path_ram=os.getenv('basic_path_ram')
         self.docelowy_url_dla_post_pomiarow=os.getenv('docelowy_url_dla_post_pomiarow')
         self.basic_path_project=os.getenv('basic_path_project')
@@ -126,7 +59,7 @@ class KlasaWysylka(object):
         self.zaczynamy()
 
     def inicjalizacja_zmiennych_paczkowych(self):
-        drukuj("def: inicjalizacja_zmiennych_paczkowych")
+        self.fp.drukuj("def: inicjalizacja_zmiennych_paczkowych")
         self.wersja_json="0.7"
         self.sn_platform=self.get_mac_address() #get_numer_seryjny_platform() # do wywalenia
         self.mac_address_platform=self.get_mac_address()
@@ -142,13 +75,13 @@ class KlasaWysylka(object):
     def getIPV4(self):
         try:
             str_ip="nie wyznaczono"
-            drukuj("def: getIPV4")
+            self.fp.drukuj("def: getIPV4")
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             s.connect(("8.8.8.8", 80))
             print(s.getsockname()[0])
             str_ip=s.getsockname()[0]
             if str_ip is None:
-                drukuj("nie udało się wyznaczyć numeru ip w sieci lokalnej")
+                self.fp.drukuj("nie udało się wyznaczyć numeru ip w sieci lokalnej")
                 str_ip=f"nie wyznaczono"
                 
             ###cmd='/sbin/ifconfig wlan0 | grep "inet "' #awk don't work in python3 # | awk "{print $2}"'
@@ -171,17 +104,17 @@ class KlasaWysylka(object):
             #        drukuj("nie udało się wyznaczyć numeru ip w sieci lokalnej")
             #        str_ip=f"nie wyznaczono"
         except Exception as e:
-            drukuj(f"getIPV4: wystapil blad {e}")
+            self.fp.drukuj(f"getIPV4: wystapil blad {e}")
             str_ip=f"nie wyznaczono"
             traceback.print_exc()
         return str_ip
 
     def metoda_napiecie_baterii_platform(self):
-        drukuj("def: status_baterii_rpi")
+        self.fp.drukuj("def: status_baterii_rpi")
         if os.path.exists(f"{self.basic_path_ram}/dane_baterii.txt"):
             with open(f"{self.basic_path_ram}/dane_baterii.txt", "r") as file:
                 text=file.read()
-            drukuj(text)
+            self.fp.drukuj(text)
             wartosc_w_V=text.split(": ")[1] #biore same liczby
             return wartosc_w_V
         return "-1"
@@ -311,7 +244,7 @@ class KlasaWysylka(object):
     # do usuniecia bashowe wywolania
     def wyznacz_zasieg_platform_wifi(self):
         #inspiracja https://stackoverflow.com/a/30585711/13231758
-        drukuj("def: wyznacz_zasieg_platform_wifi")
+        self.fp.drukuj("def: wyznacz_zasieg_platform_wifi")
         if os.name == "posix":
             nazwa_interfejsu=os.getenv('nazwa_interfejsu')
             #cmd=f"/usr/sbin/iwconfig {nazwa_interfejsu} | grep Signal | /usr/bin/awk '{print $4}' | /usr/bin/cut -d'=' -f2"
@@ -321,27 +254,28 @@ class KlasaWysylka(object):
                 dbm_z_jedn=dbm.split("level=")[1]
                 try:
                     dbm_liczba=int(dbm_z_jedn.split(" ")[0])
-                    drukuj(f"{dbm_liczba}")
+                    self.fp.drukuj(f"{dbm_liczba}")
                     quality = 2 * (dbm_liczba + 100)
-                    drukuj("{0} dbm_num = {1}%".format(dbm_liczba, quality))
+                    self.fp.drukuj("{0} dbm_num = {1}%".format(dbm_liczba, quality))
                     if quality < 70:
                         self.flaga_slaby_zasieg_wifi = True
                     self.flaga_wifi=True
                     self.flaga_ethernet=False #tutaj się wacham - jak są dwa co ma być w statusie
                     return str(quality)
                 except Exception as e:
-                    drukuj("brak liczby")
-                    drukuj(f"{e}")
+                    self.fp.drukuj("brak liczby")
+                    self.fp.drukuj(f"{e}")
                     self.flaga_wifi=False
                     self.flaga_ethernet=True #nie do konca jestem tego pewien
                     traceback.print_exc()
             else:
-                drukuj("Siła sygnału połączenia wifi router nie została znaleziona")
+                self.fp.drukuj("Siła sygnału połączenia wifi router nie została znaleziona")
                 self.flaga_wifi=False
                 self.flaga_ethernet=True #nie do konca jestem tego pewien
                 return str(-1)
         else:
-            drukuj("wez kurde oprogramuj tego windowsa co?")
+            raise self.fp.exceptionWindows
+            self.fp.drukuj("wez kurde oprogramuj tego windowsa co?")
             przerwij_i_wyswietl_czas()
 
     def dostosuj_format_id(self, id):
@@ -372,7 +306,7 @@ class KlasaWysylka(object):
         return temperatura_z_jednostka.split(" ")[0] #ucinamy " C" z wartosc 
     
     def parsowanie_pomiarow(self, krotki_danych):
-        drukuj("parsowanie_zmiennych")
+        self.fp.drukuj("parsowanie_zmiennych")
         try:
             krotki_danych=krotki_danych
             lista=[]
@@ -408,14 +342,14 @@ class KlasaWysylka(object):
                 }
                 #drukuj(element_listy)
                 lista.append(element_listy)
-            drukuj(lista)
+            self.fp.drukuj(lista)
             return lista
         except TypeError as e:
-            drukuj(str(e))
+            self.fp.drukuj(str(e))
             traceback.print_exc()
             return None
         except Exception as e:
-            drukuj(str(e))
+            self.fp.drukuj(str(e))
             traceback.print_exc()
             return None
 
@@ -430,11 +364,11 @@ class KlasaWysylka(object):
                 docelowy_url_dla_post,
                 json=json_object,
             )
-            drukuj(f"response.txt: {response.text}")
+            self.fp.drukuj(f"response.txt: {response.text}")
             #mogę jeszcze sprawdzać Success
             print(f"response.status_code: {response.status_code}")
             if response.status_code == 200:
-                drukuj("poprawna odpowiedż serwera")
+                self.fp.drukuj("poprawna odpowiedż serwera")
                 json_response=json.loads(response.text)
                 print(json_response)
                 dict_zwracany['status_code']="200"
@@ -445,40 +379,40 @@ class KlasaWysylka(object):
                             pass
                             print("jest")
                         else:
-                            drukuj(f"Success:{czy_sukces}")
+                            self.fp.drukuj(f"Success:{czy_sukces}")
                         dict_zwracany["sukces_zapisu"]=str(f"{czy_sukces}")
                 except KeyError as e:
-                    drukuj(f"Nie ma takiego parametru w odeslanym jsonie z outsystemu {e}")
+                    self.fp.drukuj(f"Nie ma takiego parametru w odeslanym jsonie z outsystemu {e}")
                     dict_zwracany["sukces_zapisu"]=str(f"{False}")
                 #plik_z_danymi=open(self.path_plik_z_krotkami_do_wysylki_file, "w")
                 #plik_z_danymi.write("")
                 #plik_z_danymi.close()
             else:
-                drukuj("błędna odpowiedź serwera")
-                drukuj(f"response.status_code: {response.status_code}")
+                self.fp.drukuj("błędna odpowiedź serwera")
+                self.fp.drukuj(f"response.status_code: {response.status_code}")
         except urllib.error.URLError as e:
-            drukuj(f"Problem z wyslaniem pakietu: {e}")
+            self.fp.drukuj(f"Problem z wyslaniem pakietu: {e}")
             traceback.print_exc()
         except Exception as e:
-            drukuj("zlapałem wyjatek: {e}")
+            self.fp.drukuj("zlapałem wyjatek: {e}")
             traceback.print_exc()
-        drukuj(f"dict_zwracany: {type(dict_zwracany)}")
+        self.fp.drukuj(f"dict_zwracany: {type(dict_zwracany)}")
         return dict_zwracany
 
 
     def zaczynamy(self):
-        drukuj("def: zaczynamy")
+        self.fp.drukuj("def: zaczynamy")
         try:
             scieszka=f"{self.basic_path_ram}/sort_usr"
             if os.path.isdir(f"{self.basic_path_ram}/sort_usr") == True:
                 lista_plikow=os.listdir(f"{self.basic_path_ram}/sort_usr")
-                drukuj(f"lista_plikow: {lista_plikow}")
+                self.fp.drukuj(f"lista_plikow: {lista_plikow}")
                 file = open(f"{self.basic_path_ram}/wysylka.log", "a")
-                file.write(f"{data_i_godzina()}\n")
+                file.write(f"{self.fp.data_i_godzina()}\n")
                 lista_plikow=lista_plikow[::-1] #robie rewers na liście żeby wrzucało na outsystem od najstarszego pomiaru
                 if len(lista_plikow)>0:
                     for plik in lista_plikow: 
-                        drukuj(f"nazwa pliku: {plik}")
+                        self.fp.drukuj(f"nazwa pliku: {plik}")
                         with open(scieszka+"/"+plik, "r") as file:
                             krotki_danych = file.readlines()
                         file.close()
@@ -502,16 +436,16 @@ class KlasaWysylka(object):
                         path_to_json_wysylki_txt=f"{self.basic_path_project}/json_do_wysylki.txt"
                         with open(f"{path_to_json_wysylki_txt}", "a+") as outfile:
                             outfile.write("----------------------------")
-                            outfile.write(str(data_i_godzina()))
+                            outfile.write(str(self.fp.data_i_godzina()))
                             outfile.write("\n"+json_object) 
                             #drukuj(json_object)
             
                         slownik_response=self.wyslanie_obiektu_json_z_danymi(json_data)
                         #dopisac ze zalezy od OK=200
-                        drukuj(f"slownik_response: {slownik_response}")
-                        drukuj(f"kurwa  {type(slownik_response)}")                        
-                        drukuj(type(slownik_response['status_code'] ))
-                        drukuj(type(slownik_response["sukces_zapisu"]))
+                        self.fp.drukuj(f"slownik_response: {slownik_response}")
+                        self.fp.drukuj(f"kurwa  {type(slownik_response)}")                        
+                        self.fp.drukuj(type(slownik_response['status_code'] ))
+                        self.fp.drukuj(type(slownik_response["sukces_zapisu"]))
                         if slownik_response['status_code'] == "200" and slownik_response["sukces_zapisu"] == "True":
                             with open(f"{self.basic_path_ram}/wysylka.log", "a") as logi:
                                 logi.write(f"plik: {plik}\n")
@@ -519,36 +453,37 @@ class KlasaWysylka(object):
                                 logi.write(f"sukces_zapisu:{slownik_response['sukces_zapisu']}\n")
                             with open(f"{self.basic_path_ram}/status.log", "a") as status_logi:
                                 status_logi.write(f"------------------\n")
-                                status_logi.write(f"{data_i_godzina()}\n")
+                                status_logi.write(f"{self.fp.data_i_godzina()}\n")
                                 status_logi.write(f"{self.wylicz_status_platform()}\n")
                         else:
-                            drukuj("nie udalo się wyslac i poprawnie zapisać pomiarow - wysylac będę probowal ponownie w kolejnej iteracji")
+                            self.fp.drukuj("nie udalo się wyslac i poprawnie zapisać pomiarow - wysylac będę probowal ponownie w kolejnej iteracji")
                             with open(f"{self.basic_path_ram}/status.log", "a") as status_logi:
                                 status_logi.write(f"------------------\n")
-                                status_logi.write(f"{data_i_godzina()}\n")
+                                status_logi.write(f"{self.fp.data_i_godzina()}\n")
                                 status_logi.write(f"{self.wylicz_status_platform()}\n")
                         
                         if os.path.exists(scieszka+"/"+plik):
                             os.remove(scieszka+"/"+plik)
             else:
-                drukuj("brak plikow do posortowania")
+                self.fp.drukuj("brak plikow do posortowania")
 
         except Exception as e:
-            drukuj("przy zmiennych został wyłapany bląd "+str(e))
+            self.fp.drukuj("przy zmiennych został wyłapany bląd "+str(e))
             traceback.print_exc()
             #przerwij_i_wyswietl_czas()
 
 def main():
+    fp=FunkcjePomocnicze(nazwa_programu())
     basic_path_ram=""
     flara_skryptu=""
     try:
-        drukuj(f"------{nazwa_programu()}--------")
+        fp.drukuj(f"------{nazwa_programu()}--------")
         if os.name == "posix":
-            drukuj("posix")
+            fp.drukuj("posix")
             dotenv_path = "./.env"
-            file_istnienie(dotenv_path, "sprawdz czy plik .env istnieje")
+            fp.file_istnienie(dotenv_path, "sprawdz czy plik .env istnieje")
             load_dotenv(dotenv_path)
-            basic_path_ram=zmienna_env_folder('basic_path_ram', ".env - sprawdz basic_path_ram")
+            basic_path_ram=fp.zmienna_env_folder('basic_path_ram', ".env - sprawdz basic_path_ram")
 
             flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
             with open(flara_skryptu, "w") as file:
@@ -557,19 +492,24 @@ def main():
             inicjalna=False
             klasawysylka=KlasaWysylka(inicjalna)
         else:
+            raise ExceptionWindows
             drukuj("notposix - pewnie windows - wez to czlowieku oprogramuj")
-            przerwij_i_wyswietl_czas()
-        usun_flare(basic_path_ram, flara_skryptu)
+        fp.usun_flare(basic_path_ram, flara_skryptu)
     except ExceptionEnvProjektu as e:
-        drukuj(f"exception {e}")
-        drukuj(f"sprawdz czy dobrze wpisales dane w .env (albo czy w ogole je wpisales ...)")
+        fp.drukuj(f"exception {e}")
+        fp.drukuj(f"sprawdz czy dobrze wpisales dane w .env (albo czy w ogole je wpisales ...)")
         traceback.print_exc()
-        usun_flare(basic_path_ram, flara_skryptu)
+        fp.usun_flare(basic_path_ram, flara_skryptu)
+    except ExceptionWindows as e:
+        fp.drukuj(f"exception {e}")
+        fp.drukuj(f"nie oprogramowales czegos na windowsa - uzupelnij")
+        traceback.print_exc()
+        fp.usun_flare(basic_path_ram, flara_skryptu)
     except Exception as e:
-        drukuj(f"exception {e}")
-        drukuj(f"sprawdz czy .env widziany jest w crontabie")
+        fp.drukuj(f"exception {e}")
+        fp.drukuj(f"sprawdz czy .env widziany jest w crontabie")
         traceback.print_exc()
-        usun_flare(basic_path_ram, flara_skryptu)
+        fp.usun_flare(basic_path_ram, flara_skryptu)
 
 if __name__ == "__main__":
     main()
