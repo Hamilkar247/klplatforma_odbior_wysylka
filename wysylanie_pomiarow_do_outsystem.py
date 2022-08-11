@@ -1,8 +1,8 @@
 # - *- coding: utf-8 - *-
+from importlib.resources import path
 from inspect import trace
 import os
 from datetime import datetime, timedelta
-import sys
 import traceback
 from typing import Type
 #from requests import Session
@@ -434,6 +434,7 @@ class KlasaWysylka(object):
                         json_object = json.dumps(json_data, indent = 4)
                         #plik będący logiem wysyłanych plików do tomka
                         path_to_json_wysylki_txt=f"{self.basic_path_project}/json_do_wysylki.txt"
+                        self.fp.drukuj(f"path_to_json_wysylki_txt: {path_to_json_wysylki_txt}")
                         with open(f"{path_to_json_wysylki_txt}", "a+") as outfile:
                             outfile.write("----------------------------")
                             outfile.write(str(self.fp.data_i_godzina()))

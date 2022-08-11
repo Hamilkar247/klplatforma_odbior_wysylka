@@ -86,7 +86,7 @@ class UbijaczProcesow():
                     file_path=f"{basic_path_ram}/{element_listy[0]}"
                     czas_dzialania=element_listy[1]
                     if os.path.exists(file_path):
-                        self.fp.start(
+                        self.start(
                             file_path=file_path, 
                             nazwa_flary=element_listy[0], 
                             czas_dzialania=czas_dzialania
