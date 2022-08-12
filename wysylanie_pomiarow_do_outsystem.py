@@ -439,7 +439,7 @@ class KlasaWysylka(object):
                             "zasieg_platform_wifi": self.zasieg_platform_wifi,
                             "bateria_platform": self.napiecie_baterii_platform,
                             "local_ipv4": self.local_ipv4,
-                            "timezone": self.get_diff(datetime.now()),
+                            "timezone": self.get_diff(datetime.now(), "Europe/Warsaw"),
                             "data": lista_pomiarow_z_transmiterow
                         }
                         #drukuj("dziala")
