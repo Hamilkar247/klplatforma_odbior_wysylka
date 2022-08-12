@@ -400,7 +400,7 @@ class KlasaWysylka(object):
         self.fp.drukuj(f"dict_zwracany: {type(dict_zwracany)}")
         return dict_zwracany
 
-    def get_diff(now, tzname):
+    def get_diff(self, now, tzname):
         tz = timezone(tzname)
         utc = timezone('UTC')
         utc.localize(datetime.now())
