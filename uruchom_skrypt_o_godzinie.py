@@ -71,7 +71,7 @@ def main():
             load_dotenv(dotenv_path)
             basic_path_ram=fp.zmienna_env_folder("basic_path_ram","basic_path_ram - coś nie tak")
             fp.drukuj(f"{os.getpid()}")
-            path_preflara=f"{basic_path_ram}/uruchom_skrypty_klraspi.preflara"
+            path_preflara=f"{basic_path_ram}/utrzymanie_wersji.py.preflara"
             
             us=UruchamiaczSkryptu()
             if os.path.exists(path_preflara) == True:
