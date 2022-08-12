@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 import socket
 import psutil
 from funkcje_pomocnicze import FunkcjePomocnicze, ExceptionEnvProjektu, ExceptionNotExistFolder, ExceptionWindows
+from pytz import timezone
 
 ###############
 
@@ -60,7 +61,7 @@ class KlasaWysylka(object):
 
     def inicjalizacja_zmiennych_paczkowych(self):
         self.fp.drukuj("def: inicjalizacja_zmiennych_paczkowych")
-        self.wersja_json="0.7"
+        self.wersja_json="0.8"
         self.sn_platform=self.get_mac_address() #get_numer_seryjny_platform() # do wywalenia
         self.mac_address_platform=self.get_mac_address()
         self.local_ipv4=self.getIPV4()
@@ -399,6 +400,16 @@ class KlasaWysylka(object):
         self.fp.drukuj(f"dict_zwracany: {type(dict_zwracany)}")
         return dict_zwracany
 
+    def get_diff(now, tzname):
+        tz = timezone(tzname)
+        utc = timezone('UTC')
+        utc.localize(datetime.now())
+        delta =  utc.localize(now) - tz.localize(now)
+        print(delta)
+        delta=str(delta).split(":")[0]
+        delta="+"+delta
+        print(delta)
+        return delta
 
     def zaczynamy(self):
         self.fp.drukuj("def: zaczynamy")
@@ -423,11 +434,12 @@ class KlasaWysylka(object):
                             #po uzgodnieniu z tomkiem sn_rpi --> sn_platformy
                             "sn_platform": self.mac_address_platform,#self.sn_platform,
                             "mac_address_platform": self.mac_address_platform,
-                            "local_ipv4": self.local_ipv4,
                             #nie potrzebne#"sn_device_mother": self.mother_serial_number,
                             "status_platform": self.status,
                             "zasieg_platform_wifi": self.zasieg_platform_wifi,
                             "bateria_platform": self.napiecie_baterii_platform,
+                            "local_ipv4": self.local_ipv4,
+                            "timezone": self.get_diff(datetime.now()),
                             "data": lista_pomiarow_z_transmiterow
                         }
                         #drukuj("dziala")
