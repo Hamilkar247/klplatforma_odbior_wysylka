@@ -174,7 +174,7 @@ def main():
             fp.file_istnienie(dotenv_path, "dotenv_path - coś nie tak")
             load_dotenv(dotenv_path)
             basic_path_ram=fp.zmienna_env_folder("basic_path_ram","basic_path_ram - coś nie tak")
-            config_folder="config_klraspi"
+            config_folder="config_klplatforma"
             if os.path.isdir(f"../{config_folder}") == False:
                 os.mkdir(f"../{config_folder}")
             #rozbija na scieszke i ogon - a wiec reszte scieszki i koncowy element
