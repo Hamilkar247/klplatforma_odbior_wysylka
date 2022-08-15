@@ -40,7 +40,7 @@ class PobranieOutsystem(object):
         config_folder="config_klplatforma"
         head, tail = os.path.split(os.getcwd())
         self.fp.drukuj(f"config_folder:  {head}/{config_folder}")
-        self.path_to_config=self.fp.folder_istnienie_2(f"{head}/{config_folder}", "nie ma folderu do configu! sprawdz czy istnieje!")
+        self.path_to_config=f"{head}/{config_folder}"
 
     def numer_seryjny_raspberki(self):
         sn=[]
