@@ -220,7 +220,7 @@ def main():
                     sortousredniacz=SortoUsredniacz(inicjalna)
                     break
                 else:
-                    fp.drukuj("brak pomiaru")
+                    fp.drukuj("brak pomiarow do posortowania i usrednienia")
                 time.sleep(1)
         else:
             drukuj("oprogramuj tego windowsa ziom")
