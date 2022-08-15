@@ -36,8 +36,8 @@ class PobranieOutsystem(object):
         self.url_do_pobrania_konfiguracji=os.getenv('url_do_pobrania_konfiguracji')
         #przykład zawartosci /home/klraspi/skrypty_klraspi
         self.basic_path_project=os.getenv('basic_path_project')
-        #przykładowa zawartosc /home/klraspi/config/urzadzenia
-        config_folder="config_klraspi"
+        #przykładowa zawartosc /home/klraspi/config_klplatforma/urzadzenia
+        config_folder="config_klplatforma"
         head, tail = os.path.split(os.getcwd())
         self.fp.drukuj(f"config_folder:  {head}/{config_folder}")
         self.path_to_config=self.fp.folder_istnienie_2(f"{head}/{config_folder}", "nie ma folderu do configu! sprawdz czy istnieje!")
