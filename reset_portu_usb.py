@@ -68,10 +68,16 @@ def main():
             rpu.start()
         else:
             drukuj("oprogramuj tego windowsa")
+            raise ExceptionWindows
         fp.usun_flare(basic_path_ram, flara_skryptu)
     except ExceptionEnvProjektu as e:
         fp.drukuj(f"exception {e}")
         fp.drukuj(f"sprawdz czy dobrze wpisales dane w .env (albo czy w ogole je wpisales ...)")
+        traceback.print_exc()
+        fp.usun_flare(basic_path_ram, flara_skryptu)
+    except ExceptionWindows as e:
+        fp.drukuj(f"exception {e}")
+        fp.drukuj(f"nie oprogramowales czegos na windowsa - uzupelnij")
         traceback.print_exc()
         fp.usun_flare(basic_path_ram, flara_skryptu)
     except Exception as e:

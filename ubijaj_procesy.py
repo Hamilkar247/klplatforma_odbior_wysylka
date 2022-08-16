@@ -38,7 +38,7 @@ class UbijaczProcesow():
             self.fp.drukuj(f"obecny_czas: {obecny_czas}")
             self.fp.drukuj(f"obecny_czas+{czas_dzialania}: {obecny_czas+czas_dzialania}")
             if nazwa_flary == "pomiar_rtl_433.py.flara":
-                czas_pliku_pomiary_txt=f"{basic_path_ram}/pomiary.txt"
+                czas_pliku_pomiary_txt=os.path.getmtime(f"{basic_path_ram}/pomiary.txt")
                 if obecny_czas > czas_pliku_pomiary_txt+120:
                     self.fp.drukuj("plik pomiary.txt cos dlugo sie zasiedzial - podejrzenie zaciecia LIVEUSB ERROR")
                     reset_portu_usb.main()
