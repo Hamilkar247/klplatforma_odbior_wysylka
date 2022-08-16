@@ -94,11 +94,14 @@ def main():
                         obecny_czas=time.mktime(datetime.now().timetuple())
                         if os.path.exists(f"{basic_path_ram}/pomiary.txt"):
                             czas_pliku_pomiary_txt=os.path.getmtime(f"{basic_path_ram}/pomiary.txt")
-                            if czas_pliku_pomiary_txt > obecny_czas + 120:
+                            fp.drukuj(czas_pliku_pomiary_txt)
+                            if czas_pliku_pomiary_txt > obecny_czas - 120:
                                 os.kill(pid, signal.SIGTERM)
                                 os.remove(flara_skryptu)
                                 fp.drukuj("mała liczba pomiarow - skilowalem i uruchamiam raz jeszcze")
                                 us.start(flara_skryptu)
+                        else:
+                            fp.drukuj("na razie wydaje sie ze dziala - odmeldowuje się")
                     else:
                         #jak widać byla flara ale jej proces juz umarl
                         os.remove(flara_skryptu)
