@@ -275,7 +275,7 @@ class KlasaWysylka(object):
                 self.flaga_ethernet=True #nie do konca jestem tego pewien
                 return str(-1)
         else:
-            raise self.fp.exceptionWindows
+            raise ExceptionWindows
             self.fp.drukuj("wez kurde oprogramuj tego windowsa co?")
             przerwij_i_wyswietl_czas()
 
@@ -478,7 +478,7 @@ class KlasaWysylka(object):
                         if os.path.exists(scieszka+"/"+plik):
                             os.remove(scieszka+"/"+plik)
             else:
-                self.fp.drukuj("brak plikow do posortowania")
+                self.fp.drukuj("\nbrak plikow do wyslania")
 
         except Exception as e:
             self.fp.drukuj("przy zmiennych został wyłapany bląd "+str(e))
