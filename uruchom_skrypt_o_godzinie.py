@@ -27,22 +27,22 @@ class UruchamiaczSkryptu():
     def __init__(self):
         self.fp=funkcje_pomocnicze_inicjalizacja()
 
-    # def sprawdz_program_o_tym_pid_dziala(self, pid):
-    #     pid = 0
-    #     if psutil.pid_exists(pid):
-    #         print("a process with pid %d exists" % pid)
-    #         return
-    #     else:
-    #         print("a process with pid %d does not exist" % pid)
-    #     try:
-    #         self.fp.drukuj("sprawdz_program_o_tym_numerze_pid")
-    #         os.kill(pid, 0) # 0 doesn't send any signal, but does error checks
-    #     except OSError:
-    #         self.fp.drukuj("False")
-    #         return False #print("Proc exited")
-    #     else:
-    #         self.fp.drukuj("True")
-    #         return True  #print("Proc is still running")
+    def sprawdz_program_o_tym_pid_dziala(self, pid):
+        pid = 0
+        if psutil.pid_exists(pid):
+            self.fp.drukuj("a process with pid %d exists" % pid)
+            return
+        else:
+            self.fp.drukuj("a process with pid %d does not exist" % pid)
+        try:
+            self.fp.drukuj("sprawdz_program_o_tym_numerze_pid")
+            os.kill(pid, 0) # 0 doesn't send any signal, but does error checks
+        except OSError:
+            self.fp.drukuj("False")
+            return False #print("Proc exited")
+        else:
+            self.fp.drukuj("True")
+            return True  #print("Proc is still running")
     
     def start(self, flara_path):
         flara_file=open(flara_path, "w")
@@ -84,14 +84,16 @@ def main():
                         linie=file.readline()
                     pid=int(linie)
                     #dziala_flaga=sprawdz_program_o_tym_pid_dziala(pid)
+                    fp.drukuj("-diagnoza")
                     fp.drukuj(pid)
+                    us.sprawdz_program_o_tym_pid_dziala(pid)
                     if psutil.pid_exists(pid) == True:
                         fp.drukuj("skrypt istnieje i działa - więc nie uruchamiam")
                     else:
                         #jak widać byla flara ale jej proces juz umarl
                         os.remove(flara_skryptu)
                         fp.drukuj("usuwam plik flary i startujemy na nowo program")
-                        us.start(flara_skryptu)
+                        ##########us.start(flara_skryptu)
             else: 
                 fp.drukuj("czekam na skrypt klplatforma_utrzymanie_wersji/utrzymanie_wersji.py")
         else:

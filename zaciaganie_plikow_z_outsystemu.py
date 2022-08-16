@@ -42,13 +42,13 @@ class PobranieOutsystem(object):
         self.fp.drukuj(f"config_folder:  {head}/{config_folder}")
         self.path_to_config=f"{head}/{config_folder}"
 
-    def numer_seryjny_raspberki(self):
-        sn=[]
-        with open("/sys/firmware/devicetree/base/serial-number", "r") as plik_numer_seryjny:
-            sn=plik_numer_seryjny.readlines()
-        #ucinam ostatni bit z czymś takim - \u0000
-        #powinniśmy dostać coś w tym stylu
-        return sn[0][0:-1]
+    #def numer_seryjny_raspberki(self):
+    #    sn=[]
+    #    with open("/sys/firmware/devicetree/base/serial-number", "r") as plik_numer_seryjny:
+    #        sn=plik_numer_seryjny.readlines()
+    #    #ucinam ostatni bit z czymś takim - \u0000
+    #    #powinniśmy dostać coś w tym stylu
+    #    return sn[0][0:-1]
     
     def get_mac_address(self):
         self.fp.drukuj("def: get_mac_address")

@@ -37,9 +37,6 @@ class PomiarRTL433():
         with subprocess.Popen(command, stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as p:
             for line in p.stdout:
                 #ech=lineit(" ")
-                file=open(file_path, "a")
-                file.write(f"{line}")
-                file.close()
                 self.fp.drukuj(f"minuta:{minuta}")
                 obecna_minuta=datetime.now().minute
                 if minuta != obecna_minuta:
@@ -47,6 +44,15 @@ class PomiarRTL433():
                     minuta = obecna_minuta
                     shutil.copyfile(file_path, file_path+".old")
                     os.remove(file_path)
+                file=open(file_path, "a")
+                file.write(f"{line}")
+                file.close()
+
+#######3                if minuta != obecna_minuta:
+#######3                    self.fp.drukuj("kopiuje plik")
+#######3                    minuta = obecna_minuta
+#######3                    shutil.copyfile(file_path, file_path+".old")
+#######3                    os.remove(file_path)
                 #print(line, end="")
                 
                 #print(line,end="")

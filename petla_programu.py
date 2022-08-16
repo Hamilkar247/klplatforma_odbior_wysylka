@@ -78,7 +78,7 @@ class thread_with_exception(threading.Thread):
         try:
             self.target()
         finally:
-            self.fp.drukuj('ended')
+            self.fp.drukuj(f'koniec watku {self.name}')
         
     def get_id(self):
         self.fp.drukuj(f"{self.name}: def: get_id")
