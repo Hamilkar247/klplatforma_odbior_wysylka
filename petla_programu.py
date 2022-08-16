@@ -157,7 +157,7 @@ class ProgramPetla():
                 time.sleep(krok*60) #time.sleep będą w sekundach 0.5*60=30
                 czas_wedlug_granulacji = czas_wedlug_granulacji + krok
                 if czas_wedlug_granulacji > 60:
-                    drukuj("pelna godzina - od nowa")
+                    self.fp.drukuj("pelna godzina - od nowa")
                     czas_wedlug_granulacji = 0
         except Exception as e:
             self.fp.drukuj(f"Błąd: {e}")
