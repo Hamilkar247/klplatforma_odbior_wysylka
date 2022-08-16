@@ -10,6 +10,7 @@ import psutil
 from dotenv import load_dotenv
 from funkcje_pomocnicze import FunkcjePomocnicze, ExceptionEnvProjektu, ExceptionNotExistFolder, ExceptionWindows
 import psutil
+import signal
 
 #########################
 
@@ -84,16 +85,25 @@ def main():
                         linie=file.readline()
                     pid=int(linie)
                     #dziala_flaga=sprawdz_program_o_tym_pid_dziala(pid)
-                    fp.drukuj("-diagnoza")
-                    fp.drukuj(pid)
+                    fp.drukuj(f"{pid}")
                     us.sprawdz_program_o_tym_pid_dziala(pid)
                     if psutil.pid_exists(pid) == True:
-                        fp.drukuj("skrypt istnieje i działa - więc nie uruchamiam")
+                        fp.drukuj("skrypt istnieje i wydaje sie ze może dzialać")
+                        #TYMCZASOWO
+
+                        obecny_czas=time.mktime(datetime.now().timetuple())
+                        if os.path.exists(f"{basic_path_ram}/pomiary.txt"):
+                            czas_pliku_pomiary_txt=os.path.getmtime(f"{basic_path_ram}/pomiary.txt")
+                            if czas_pliku_pomiary_txt > obecny_czas + 120:
+                                os.kill(pid, signal.SIGTERM)
+                                os.remove(flara_skryptu)
+                                fp.drukuj("mała liczba pomiarow - skilowalem i uruchamiam raz jeszcze")
+                                us.start(flara_skryptu)
                     else:
                         #jak widać byla flara ale jej proces juz umarl
                         os.remove(flara_skryptu)
                         fp.drukuj("usuwam plik flary i startujemy na nowo program")
-                        ##########us.start(flara_skryptu)
+                        us.start(flara_skryptu)
             else: 
                 fp.drukuj("czekam na skrypt klplatforma_utrzymanie_wersji/utrzymanie_wersji.py")
         else:
