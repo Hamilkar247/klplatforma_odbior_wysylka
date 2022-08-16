@@ -38,13 +38,20 @@ class UbijaczProcesow():
             self.fp.drukuj(f"obecny_czas: {obecny_czas}")
             self.fp.drukuj(f"obecny_czas+{czas_dzialania}: {obecny_czas+czas_dzialania}")
             if nazwa_flary == "pomiar_rtl_433.py.flara":
-                if os.path.exists(f"{basic_path_ram}/problemy_rtl_433.log"):
-                    self.fp.drukuj("reset portu")
+                czas_pliku_pomiary_txt=f"{basic_path_ram}/pomiary.txt"
+                if obecny_czas > czas_pliku_pomiary_txt+120:
+                    self.fp.drukuj("plik pomiary.txt cos dlugo sie zasiedzial - podejrzenie zaciecia LIVEUSB ERROR")
                     reset_portu_usb.main()
-                    os.remove(f"{basic_path_ram}/problemy_rtl_433.log")
-                    #return False
+                    os.remove(f"{basic_path_ram}/ubijaj_procesy.py.log")#"ubijaj_procesy.py.log")
                     with open(f"{basic_path_ram}/ubijaj_procesy.py.log", "w") as f:
                         f.write("\n")
+#                if os.path.exists(f"{basic_path_ram}/problemy_rtl_433.log"):
+#                    self.fp.drukuj("reset portu")
+#                    reset_portu_usb.main()
+#                    os.remove(f"{basic_path_ram}/problemy_rtl_433.log")
+#                    #return False
+#                    with open(f"{basic_path_ram}/ubijaj_procesy.py.log", "w") as f:
+#                        f.write("\n")
             if obecny_czas > czas_dzialania + czas_pliku:
                 if True:#numer_pid != "" and numer_pid is not None:
                     if os.name == "posix":
@@ -70,7 +77,7 @@ class UbijaczProcesow():
         file_path=""
         try:
             lista = [
-                    ["pomiar_rtl_433.py.flara", 48000],
+                    ["pomiar_rtl_433.py.flara", 400],
                     ["wysylanie_pomiarow_do_outsystem.py.flara", 480],
                     ["zaciaganie_plikow_z_outsystemu.py.flara", 480],
                     ["sortowanie_i_usrednianie_pomiarow.py.flara", 480]

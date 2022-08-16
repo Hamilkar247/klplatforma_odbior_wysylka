@@ -133,9 +133,9 @@ class ProgramPetla():
                                               target=zaciaganie_plikow_z_outsystemu.main,
                                               interval=5))
             #tymczasowo nie pasuje mi do koncepcji - refactor potrzebny
-            #watki.append(thread_with_exception(name="ubijaj_procesy",
-            #                                   target=ubijaj_procesy.main,
-            #                                   interval=5))
+            watki.append(thread_with_exception(name="ubijaj_procesy",
+                                               target=ubijaj_procesy.main,
+                                               interval=5))
     
             while True:
                 print("-------------------------------")
