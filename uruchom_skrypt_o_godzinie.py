@@ -108,7 +108,7 @@ def main():
                         fp.drukuj("usuwam plik flary i startujemy na nowo program")
                         us.start(flara_skryptu)
             else: 
-                fp.drukuj("czekam na skrypt klplatforma_utrzymanie_wersji/utrzymanie_wersji.py")
+                fp.drukuj(f"czekam na flare skryptu {path_preflara}")
         else:
             fp.drukuj("obsluz tego windowsa ziom")
             raise ExceptionWindows
@@ -127,6 +127,7 @@ def main():
         fp.drukuj(f"sprawdz czy .env widziany jest w crontabie")
         traceback.print_exc()
         fp.usun_flare(basic_path_ram, flara_skryptu)
+    fp.drukuj("koniec programu")
 
 if __name__ == '__main__':
     main()
