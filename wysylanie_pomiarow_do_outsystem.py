@@ -456,7 +456,6 @@ class KlasaWysylka(object):
                         slownik_response=self.wyslanie_obiektu_json_z_danymi(json_data)
                         #dopisac ze zalezy od OK=200
                         self.fp.drukuj(f"slownik_response: {slownik_response}")
-                        self.fp.drukuj(f"kurwa  {type(slownik_response)}")                        
                         self.fp.drukuj(type(slownik_response['status_code'] ))
                         self.fp.drukuj(type(slownik_response["sukces_zapisu"]))
                         if slownik_response['status_code'] == "200" and slownik_response["sukces_zapisu"] == "True":
@@ -477,9 +476,71 @@ class KlasaWysylka(object):
                         
                         if os.path.exists(scieszka+"/"+plik):
                             os.remove(scieszka+"/"+plik)
+                else:
+                    ############ DO ZROBIENIA TUTAJ - STATUS KTORY W CZASIE DZIALANIA PROGRAMU ma problemy
+                    self.fp.drukuj("brak posortowanych pomiarow - wysylam san naglowek wiadomosci")
+                    self.flaga_pierwszej_wysylki=False
+                    self.flaga_brak_danych_z_nadajnikow = True
+                    self.status=self.wylicz_status_platform()
+                    json_data = {
+                        "wersja_json": self.wersja_json,
+                        #po uzgodnieniu z tomkiem sn_rpi --> sn_platformy
+                        "sn_platform": self.mac_address_platform,#self.sn_platform,
+                        "mac_address_platform": self.mac_address_platform,
+                        #nie potrzebne#"sn_device_mother": self.mother_serial_number,
+                        "status_platform": self.status,
+                        "zasieg_platform_wifi": self.zasieg_platform_wifi,
+                        "bateria_platform": self.napiecie_baterii_platform,
+                        "local_ipv4": self.local_ipv4,
+                        "timezone": self.get_diff(datetime.now(), "Europe/Warsaw"),
+                        "data": []
+                    }
+                    json_object = json.dumps(json_data, indent = 4)
+                    slownik_response=self.wyslanie_obiektu_json_z_danymi(json_data)
+                    path_to_json_wysylki_txt=f"{self.basic_path_project}/json_do_wysylki.txt"
+                    self.fp.drukuj(f"path_to_json_wysylki_txt: {path_to_json_wysylki_txt}")
+                    with open(f"{path_to_json_wysylki_txt}", "a+") as outfile:
+                        outfile.write("----------------------------")
+                        outfile.write(str(self.fp.data_i_godzina()))
+                        outfile.write("\n"+json_object) 
+                        #drukuj(json_object)
+                    with open(f"{self.basic_path_ram}/status.log", "a") as status_logi:
+                        status_logi.write(f"------------------\n")
+                        status_logi.write(f"{self.fp.data_i_godzina()}\n")
+                        status_logi.write(f"{self.wylicz_status_platform()}\n")
             else:
+                ############ DO ZROBIENIA TUTAJ - STATUS KTORY W CZASIE DZIALANIA PROGRAMU ma problemy
+                self.fp.drukuj("wydaje sie to pierwsza wysylka po włączenie platforma")
                 self.fp.drukuj("\nbrak plikow do wyslania")
-
+                self.flaga_pierwszej_wysylki=True
+                self.flaga_brak_danych_z_nadajnikow = True
+                self.status=self.wylicz_status_platform()
+                json_data = {
+                    "wersja_json": self.wersja_json,
+                    #po uzgodnieniu z tomkiem sn_rpi --> sn_platformy
+                    "sn_platform": self.mac_address_platform,#self.sn_platform,
+                    "mac_address_platform": self.mac_address_platform,
+                    #nie potrzebne#"sn_device_mother": self.mother_serial_number,
+                    "status_platform": self.status,
+                    "zasieg_platform_wifi": self.zasieg_platform_wifi,
+                    "bateria_platform": self.napiecie_baterii_platform,
+                    "local_ipv4": self.local_ipv4,
+                    "timezone": self.get_diff(datetime.now(), "Europe/Warsaw"),
+                    "data": []
+                }
+                json_object = json.dumps(json_data, indent = 4)
+                slownik_response = self.wyslanie_obiektu_json_z_danymi(json_data)
+                path_to_json_wysylki_txt=f"{self.basic_path_project}/json_do_wysylki.txt"
+                self.fp.drukuj(f"path_to_json_wysylki_txt: {path_to_json_wysylki_txt}")
+                with open(f"{path_to_json_wysylki_txt}", "a+") as outfile:
+                    outfile.write("----------------------------")
+                    outfile.write(str(self.fp.data_i_godzina()))
+                    outfile.write("\n"+json_object) 
+                    #drukuj(json_object)
+                with open(f"{self.basic_path_ram}/status.log", "a") as status_logi:
+                    status_logi.write(f"------------------\n")
+                    status_logi.write(f"{self.fp.data_i_godzina()}\n")
+                    status_logi.write(f"{self.wylicz_status_platform()}\n")
         except Exception as e:
             self.fp.drukuj("przy zmiennych został wyłapany bląd "+str(e))
             traceback.print_exc()
