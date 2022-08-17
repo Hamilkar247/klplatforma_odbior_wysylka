@@ -512,7 +512,7 @@ class KlasaWysylka(object):
                 ############ DO ZROBIENIA TUTAJ - STATUS KTORY W CZASIE DZIALANIA PROGRAMU ma problemy
                 self.fp.drukuj("wydaje sie to pierwsza wysylka po włączenie platforma")
                 self.fp.drukuj("\nbrak plikow do wyslania")
-                self.flaga_pierwszej_wysylki=True
+                self.flaga_pierwszej_wysylki = True
                 self.flaga_brak_danych_z_nadajnikow = True
                 self.status=self.wylicz_status_platform()
                 json_data = {
@@ -544,7 +544,6 @@ class KlasaWysylka(object):
         except Exception as e:
             self.fp.drukuj("przy zmiennych został wyłapany bląd "+str(e))
             traceback.print_exc()
-            #przerwij_i_wyswietl_czas()
 
 def main():
     fp=FunkcjePomocnicze(nazwa_programu())
