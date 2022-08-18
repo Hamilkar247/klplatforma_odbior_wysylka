@@ -69,7 +69,7 @@ class PobranieOutsystem(object):
                     interfejs_return=interface.address
         except KeyError as e:
             self.fp.drukuj(f"exception: {e}")
-            raise self.exceptionEnvProjektu
+            raise ExceptionEnvProjektu
         return interfejs_return
 
 
