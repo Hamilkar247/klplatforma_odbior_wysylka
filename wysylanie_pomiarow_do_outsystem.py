@@ -16,6 +16,7 @@ import socket
 import psutil
 from funkcje_pomocnicze import FunkcjePomocnicze, ExceptionEnvProjektu, ExceptionNotExistFolder, ExceptionWindows
 from pytz import timezone
+from getmac import get_mac_address as gma
 
 ###############
 
@@ -229,12 +230,15 @@ class KlasaWysylka(object):
             ####mac_address_hex_bez_zeroiks=str(mac_address_hex).split("x")[1]#f"{mac_address_hex[2,-1]}"
             ####drukuj(f"MAC address:{mac_address_hex}")
             ####return mac_address_hex_bez_zeroiks
-            nics = psutil.net_if_addrs()[os.getenv('interfejs_sieciowy')]
-            for interface in nics:
-                if interface.family == 17:
-                    print(interface.address)
-            return interface.address
+            #nics = psutil.net_if_addrs()[os.getenv('interfejs_sieciowy')]
+
+            #for interface in nics:
+            #    if interface.family == 17:
+            #        print(interface.address)
+            #return interface.address
             #return "1113uddd32"
+            self.fp.drukuj(f"{gma()}")
+            return gma()
         else:
             drukuj("brak oprogramowanego windowsa")
             return mac_address_hex_bez_zeroiks

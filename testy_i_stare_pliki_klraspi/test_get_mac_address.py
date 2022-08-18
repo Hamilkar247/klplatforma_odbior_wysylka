@@ -4,6 +4,7 @@ import sys
 import traceback
 import fcntl, socket, struct
 import psutil
+from getmac import get_mac_address as gma
 
 def nazwa_programu():
     return "wysylanie_pomiarow_do_outsystem.py"
@@ -45,6 +46,11 @@ def main2():
         if interface.family == 17:
             print(interface.address)
 
+def main3():
+    pass
+    print(gma())
+
 if __name__ == "__main__":
     #main()
-    main2()
+    #main2()
+    main3()
