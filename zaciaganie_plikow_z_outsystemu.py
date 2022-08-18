@@ -9,6 +9,7 @@ import traceback
 from dotenv import load_dotenv
 import psutil
 from funkcje_pomocnicze import FunkcjePomocnicze, ExceptionEnvProjektu, ExceptionNotExistFolder, ExceptionWindows
+from getmac import get_mac_address as gma
 
 #######################3
 
@@ -41,37 +42,15 @@ class PobranieOutsystem(object):
         head, tail = os.path.split(os.getcwd())
         self.fp.drukuj(f"config_folder:  {head}/{config_folder}")
         self.path_to_config=f"{head}/{config_folder}"
-
-    #def numer_seryjny_raspberki(self):
-    #    sn=[]
-    #    with open("/sys/firmware/devicetree/base/serial-number", "r") as plik_numer_seryjny:
-    #        sn=plik_numer_seryjny.readlines()
-    #    #ucinam ostatni bit z czymś takim - \u0000
-    #    #powinniśmy dostać coś w tym stylu
-    #    return sn[0][0:-1]
     
     def get_mac_address(self):
         self.fp.drukuj("def: get_mac_address")
-        #mac_address_int = uuid.getnode()
-        #drukuj(mac_address_int)
-        #mac_address_hex = hex(mac_address_int)
-        #drukuj(mac_address_hex)
-        #mac_address_hex_bez_zeroiks=str(mac_address_hex).split("x")[1]#f"{mac_address_hex[2,-1]}"
-        #drukuj(f"MAC address:{mac_address_hex}")
-        #return mac_address_hex_bez_zeroiks
-        interfejs_return=""
-        try:
-            nics = psutil.net_if_addrs()[os.getenv('interfejs_sieciowy')]
-            interfejs_return=""
-            for interface in nics:
-                if interface.family == 17:
-                    self.fp.drukuj(interface.address)
-                    interfejs_return=interface.address
-        except KeyError as e:
-            self.fp.drukuj(f"exception: {e}")
-            raise ExceptionEnvProjektu
-        return interfejs_return
-
+        if os.name == "posix":
+            self.fp.drukuj(f"mac_address:{gma()}")
+            return gma()
+        else:
+            drukuj("brak oprogramowanego windowsa")
+            raise ExceptionWindows
 
     def plik_z_alarmami(self):
         url=f"{self.url_do_pobrania_alarmow}{self.get_mac_address()}"

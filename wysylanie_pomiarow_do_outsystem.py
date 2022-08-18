@@ -211,37 +211,13 @@ class KlasaWysylka(object):
             status=status+32768
         return str(status)
 
-    #zastapic numerem MAC platformy
-    def get_numer_seryjny_platform(self):
-        sn=[]
-        with open("/sys/firmware/devicetree/base/serial-number", "r") as plik_numer_seryjny:
-            sn=plik_numer_seryjny.readlines()
-        #ucinam ostatni bit z czymś takim - \u0000
-        return sn[0][0:-1]
-
     def get_mac_address(self):
-        mac_address_hex_bez_zeroiks="brak_mac_address"
         if os.name == "posix":
-            #ahjo - gdy nie znajdzie interfejsu - zwraca losową liczbę
-            ####mac_address_int = uuid.getnode()
-            ####drukuj(mac_address_int)
-            ####mac_address_hex = hex(mac_address_int)
-            ####drukuj(mac_address_hex)
-            ####mac_address_hex_bez_zeroiks=str(mac_address_hex).split("x")[1]#f"{mac_address_hex[2,-1]}"
-            ####drukuj(f"MAC address:{mac_address_hex}")
-            ####return mac_address_hex_bez_zeroiks
-            #nics = psutil.net_if_addrs()[os.getenv('interfejs_sieciowy')]
-
-            #for interface in nics:
-            #    if interface.family == 17:
-            #        print(interface.address)
-            #return interface.address
-            #return "1113uddd32"
-            self.fp.drukuj(f"{gma()}")
+            self.fp.drukuj(f"mac_address:{gma()}")
             return gma()
         else:
             drukuj("brak oprogramowanego windowsa")
-            return mac_address_hex_bez_zeroiks
+            raise ExceptionWindows
     
     def get_model(self):
         return "TFA KlimaLogg Pro"

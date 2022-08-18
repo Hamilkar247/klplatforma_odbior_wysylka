@@ -90,4 +90,6 @@ class FunkcjePomocnicze():
         flara_file=open(flara_path, "w")
         flara_file.write(f"{str(os.getpid())}")
         flara_file.close()
-    
+
+
+     
