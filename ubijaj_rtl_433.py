@@ -44,8 +44,8 @@ class UbijaczRTL433():
                 pomiary_minuta_stworzenia=fdp.read().strip()
                 fdp.close()
                 self.fp.drukuj(f"minuta stworzenia pliku: {pomiary_minuta_stworzenia}")
-                minuta=datetime.now().minute
-                if minuta == pomiary_minuta_stworzenia:
+                minuta=int(datetime.now().minute)
+                if minuta - pomiary_minuta_stworzenia > 2:
                     return False
             else:
                 self.fp.drukuj(f"nie ma {file_data_pomiaru}")

@@ -19,6 +19,7 @@ import sortowanie_i_usrednianie_pomiarow
 import zaciaganie_plikow_z_outsystemu
 import pomiar_rtl_433
 import ubijaj_procesy
+import ubijaj_rtl_433
 from funkcje_pomocnicze import FunkcjePomocnicze, ExceptionEnvProjektu, ExceptionNotExistFolder, ExceptionWindows
 
 #####################
@@ -143,7 +144,7 @@ class ProgramPetla():
                                               interval=5,
                                               steady_going=False))
             watki.append(thread_with_exception(name="ubijaj_rtl", 
-                                              target=zaciaganie_plikow_z_outsystemu.main,
+                                              target=ubijaj_rtl_433.main,
                                               interval=1,
                                               steady_going=False))
             #tymczasowo nie pasuje mi do koncepcji - refactor potrzebny
