@@ -173,7 +173,6 @@ class ProgramPetla():
                         path_pomiary_minuta = f"{self.basic_path_ram}/pomiary_minuta.txt"
                         if os.path.exists(path_pomiary_minuta) == False:
                             new_watki.append(nowy_watek)
-
                 watki = new_watki
                 time.sleep(krok*60) #time.sleep będą w sekundach 0.5*60=30
                 czas_wedlug_granulacji = czas_wedlug_granulacji + krok
@@ -205,8 +204,8 @@ def main():
             
             flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
             fp.stworz_flare_z_pid(flara_skryptu)
-            pp=ProgramPetla()
-            pp.start(basic_path_ram)
+            pp=ProgramPetla(basic_path_ram)
+            pp.start()
         else:
             drukuj("oprogramuj tego windowsa ziom")
         fp.usun_flare(basic_path_ram, flara_skryptu)
