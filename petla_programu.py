@@ -33,7 +33,7 @@ def funkcje_pomocnicze_inicjalizacja():
 ##################
 
 class thread_with_exception(threading.Thread):
-    def __init__(self, name = "", target = None, start_time = None, interval = None):
+    def __init__(self, name = "", target = None, start_time = None, interval = None, steady_going = None):
         threading.Thread.__init__(self)
 
         self.fp=funkcje_pomocnicze_inicjalizacja()
@@ -44,6 +44,7 @@ class thread_with_exception(threading.Thread):
         self.start_time = start_time
         #autorytarnie powiem - że w minutach powinno być
         self.interval = interval
+        self.steady_going = steady_going
         self.fp.drukuj(f"{self.name}: def: __init__")
 
     def start(self, start_time = None):
@@ -61,13 +62,17 @@ class thread_with_exception(threading.Thread):
     def get_interval(self):
         return self.interval
     
+    def get_steady_going(self):
+        return self.steady_going
+    
     def get_attributes(self):
         self.fp.drukuj("def: get_attributes")
         atrybuty = {
             "name": self.name,
             "target": self.target,
             "start_time": self.start_time,
-            "interval": self.interval
+            "interval": self.interval,
+            "steady_going": self.steady_going
         }
         print(atrybuty)
         return atrybuty
@@ -101,9 +106,10 @@ class thread_with_exception(threading.Thread):
 
 class ProgramPetla():
 
-    def __init__(self):
+    def __init__(self, basic_path_ram):
         self.fp=funkcje_pomocnicze_inicjalizacja()
         #twe=thread_with_exception()
+        self.basic_path_ram = basic_path_ram
     
     #przemnazam ułamki minut by miec calosci i dopiero wtedy 
     def dzielenie_modulo_minuty(self, liczba_1, liczba_2):
@@ -122,19 +128,24 @@ class ProgramPetla():
             czas_wedlug_granulacji=0
             watki.append(thread_with_exception(name="sort_srednia", 
                                               target=sortowanie_i_usrednianie_pomiarow.main, 
-                                              interval=0.5))
+                                              interval=0.5,
+                                              steady_going=False))
             watki.append(thread_with_exception(name="pomiar_rtl_433",
                                                target=pomiar_rtl_433.main,
-                                               interval=100))
+                                               interval=10,
+                                               steady_going=True))
             watki.append(thread_with_exception(name="wysylka", 
                                               target=wysylanie_pomiarow_do_outsystem.main,
-                                              interval=1))
+                                              interval=1,
+                                              steady_going=False))
             watki.append(thread_with_exception(name="zaciaganie_z_outsystem", 
                                               target=zaciaganie_plikow_z_outsystemu.main,
-                                              interval=5))
+                                              interval=5,
+                                              steady_going=False))
             watki.append(thread_with_exception(name="ubijaj_rtl", 
                                               target=zaciaganie_plikow_z_outsystemu.main,
-                                              interval=1))
+                                              interval=1,
+                                              steady_going=False))
             #tymczasowo nie pasuje mi do koncepcji - refactor potrzebny
             #watki.append(thread_with_exception(name="ubijaj_procesy",
             #                                   target=ubijaj_procesy.main,
@@ -151,11 +162,17 @@ class ProgramPetla():
                         watek.raise_exception()
                         nowy_watek=thread_with_exception(name=atrybuty['name'], 
                                          target=atrybuty['target'],
-                                         interval=atrybuty['interval'])
+                                         interval=atrybuty['interval'],
+                                         steady_going=atrybuty['steady_going'])
                         nowy_watek.start(start_time=datetime.now())
-                        new_watki.append(nowy_watek)
+                        new_watki.append(nowy_watek)                        
                     else:
                         new_watki.append(watek)
+                    if watek.get_steady_going() == True:
+                        path_pomiary_minuta = f"{self.basic_path_ram}/pomiary_minuta.txt"
+                        if os.path.exists(path_pomiary_minuta) == False:
+                            new_watki.append(nowy_watek)
+
                 watki = new_watki
                 time.sleep(krok*60) #time.sleep będą w sekundach 0.5*60=30
                 czas_wedlug_granulacji = czas_wedlug_granulacji + krok
@@ -188,7 +205,7 @@ def main():
             flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
             fp.stworz_flare_z_pid(flara_skryptu)
             pp=ProgramPetla()
-            pp.start()
+            pp.start(basic_path_ram)
         else:
             drukuj("oprogramuj tego windowsa ziom")
         fp.usun_flare(basic_path_ram, flara_skryptu)
