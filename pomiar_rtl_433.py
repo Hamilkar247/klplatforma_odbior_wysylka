@@ -34,6 +34,10 @@ class PomiarRTL433():
         command=f"rtl_433 -s 2.5e6 -f 868.5e6 -H 30 -R 75 -R 150 -F json".split(" ")
         minuta=datetime.now().minute
         print(f"{minuta}")
+        file_data_pomiaru=f"{basic_path_ram}/pomiary_minuta.txt"
+        fdp=open(file_data_pomiaru, "w")
+        fdp.write(f"{minuta}\n")
+        fdp.close()
         with subprocess.Popen(command, stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as p:
             for line in p.stdout:
                 #ech=lineit(" ")
@@ -44,53 +48,15 @@ class PomiarRTL433():
                     minuta = obecna_minuta
                     shutil.copyfile(file_path, file_path+".old")
                     os.remove(file_path)
+                    fdp=open(file_data_pomiaru, "w")
+                    fdp.write(f"{minuta}\n")
                 file=open(file_path, "a")
                 file.write(f"{line}")
                 file.close()
-
-#######3                if minuta != obecna_minuta:
-#######3                    self.fp.drukuj("kopiuje plik")
-#######3                    minuta = obecna_minuta
-#######3                    shutil.copyfile(file_path, file_path+".old")
-#######3                    os.remove(file_path)
-                #print(line, end="")
-                
-                #print(line,end="")
-                #print(line,end="")
-                #print(line, end='') #process line here
     
         if p.returncode != 0:
             raise subprocess.CalledProcessError(p.returncode, p.args)
     
-        #process = subprocess.Popen(command,
-        #                    stdout=subprocess.PIPE,
-        #                    stderr=subprocess.PIPE,
-        #                    #shell=True,
-        #                    #preexec_fn=os.setsid
-        #                    )
-        #stdout, stderr = process.communicate()
-        #print(f"stdout: {stdout}")
-        #file.write(str(stdout))
-        #print(f"stderr: {stderr}")
-        #os.killpg(os.getpgid(process.pid), signal.SIGTERM)
-        #przerwij_i_wyswietl_czas()
-        #if len(stdout) > 10:
-        #    drukuj("kopiuje stary plik pomiarowy by zrobić miejsce dla nowego")
-        #    if os.path.exists(file_pomiar):
-        #        shutil.copyfile(file_pomiar, file_pomiar+".old")
-        #    file=open(file_pomiar, "w")
-        #    file.write(str(stdout.decode()))
-        #    file.close()
-        #else:
-        #    drukuj("nie kopiuje - brak nowych pomiarów")
-        #    if os.name == "posix":
-        #        brak_danych=open(f"{basic_path_ram}/brak_danych.txt", "a")
-        #        brak_danych.write(data_i_godzina())
-        #        errory=open(f"{basic_path_ram}/problemy_rtl_433.log","w")
-        #        errory.write(stderr.decode())
-        #    else:
-        #        drukuj("nie posix - nie linuks klient - wez to obsluz")
-
 def main():
     fp=FunkcjePomocnicze(nazwa_programu())
     basic_path_ram=""
