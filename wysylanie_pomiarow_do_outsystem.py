@@ -2,7 +2,7 @@
 from importlib.resources import path
 from inspect import trace
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 import traceback
 from typing import Type
 #from requests import Session
@@ -10,10 +10,8 @@ import requests
 from urllib.request import urlopen
 import urllib
 import json
-import time
 from dotenv import load_dotenv
 import socket
-import psutil
 from funkcje_pomocnicze import FunkcjePomocnicze, ExceptionEnvProjektu, ExceptionNotExistFolder, ExceptionWindows
 from pytz import timezone
 from getmac import get_mac_address as gma
@@ -33,6 +31,7 @@ class KlasaWysylka(object):
     def __init__(self, inicjalna):
         self.fp=funkcje_pomocnicze_inicjalizacja()
         #flagi do statusu
+        # odnośnik https://lightlog.atlassian.net/wiki/spaces/LIG/pages/270630932/Tablica+Status+w
         self.flaga_pierwszej_wysylki=False #1 #1
         self.flaga_brak_danych_z_nadajnikow=False #2 #2
         self.flaga_ethernet=False #4 #3
@@ -50,6 +49,9 @@ class KlasaWysylka(object):
         self.flaga_uzycie_ubijaj_procesy=False #16384 #15
         self.flaga_uzycie_reset_portu_usb=False #32768 #16
         self.flaga_reset_portu_usb_sie_nie_udal=False #65536 #17
+        #18 #262144 - uzywane w pobranie nowerj wersji programu klplatforma_odbior_wysylka
+        #19 #524288 - używane w klplatforma utrzymanie wersji - do stworzenie nowego virtualenva w klplaf
+        self.flaga_pobranie_nowej_wersji_programu_klplatforma_odbior_wysylka=False 
 
         #flagi_programow
         self.flagi_procesow=False
@@ -86,25 +88,6 @@ class KlasaWysylka(object):
                 self.fp.drukuj("nie udało się wyznaczyć numeru ip w sieci lokalnej")
                 str_ip=f"nie wyznaczono"
                 
-            ###cmd='/sbin/ifconfig wlan0 | grep "inet "' #awk don't work in python3 # | awk "{print $2}"'
-            ###dbm = str(os.popen(cmd).read()).strip()
-            ###drukuj(f"przed:{dbm}")
-            ###dbm = dbm.split(" ")[1] # biore drugi wyraz z numerem ip
-            #drukuj(f"po:   {dbm}")
-            
-            #if dbm:
-            #    drukuj(str(dbm))
-            #    str_ip=f"LAN: {dbm}"
-            #else:
-            #    cmd='/sbin/ifconfig eth0 | grep "inet "' # awk don't work in python3 # | awk "{print $2}"'
-            #    dbm = os.popen(cmd).read().strip()
-            #    dbm = dbm.split(" ")[1] # biore drugi wyraz z numerem ip
-            #    if dbm:
-            #        drukuj(str(dbm))
-            #        str_ip=f"ETH: {dbm}"
-            #    else:
-            #        drukuj("nie udało się wyznaczyć numeru ip w sieci lokalnej")
-            #        str_ip=f"nie wyznaczono"
         except Exception as e:
             self.fp.drukuj(f"getIPV4: wystapil blad {e}")
             str_ip=f"nie wyznaczono"
@@ -411,9 +394,7 @@ class KlasaWysylka(object):
                         self.status=self.wylicz_status_platform()
                         json_data = {
                             "wersja_json": self.wersja_json,
-                            #po uzgodnieniu z tomkiem sn_rpi --> sn_platformy
                             "sn_platform": self.mac_address_platform,#self.sn_platform,
-                            "mac_address_platform": self.mac_address_platform,
                             #nie potrzebne#"sn_device_mother": self.mother_serial_number,
                             "status_platform": self.status,
                             "zasieg_platform_wifi": self.zasieg_platform_wifi,
