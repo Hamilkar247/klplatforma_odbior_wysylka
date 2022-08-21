@@ -69,7 +69,7 @@ def main():
                     pid=int(linie)
                     #dziala_flaga=sprawdz_program_o_tym_pid_dziala(pid)
                     fp.drukuj(f"{pid}")
-                    processIsAlive=fp.sprawdz_program_o_tym_pid_dziala(pid)
+                    processIsAlive=fp.sprawdz_czy_program_o_tym_pid_dziala(pid)
                     if processIsAlive == True:
                         fp.drukuj("skrypt istnieje i wydaje sie ze powinien dzialać nic nie robie")
                         #TYMCZASOWO
