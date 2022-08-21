@@ -20,6 +20,7 @@ import zaciaganie_plikow_z_outsystemu
 import pomiar_rtl_433
 import ubijaj_procesy
 import ubijaj_rtl_433
+import testowy_process_dla_watka
 from funkcje_pomocnicze import FunkcjePomocnicze, ExceptionEnvProjektu, ExceptionNotExistFolder, ExceptionWindows
 
 #####################
@@ -57,12 +58,18 @@ class thread_with_exception(threading.Thread):
         self.fp.drukuj(f"{self.name}: def: set_start_time")
         self.start_time = start_time
 
+    def get_name(self):
+        return self.name
+
+    def get_target(self):
+        return self.target
+
     def get_start_time(self):
         return self.start_time
 
     def get_interval(self):
         return self.interval
-    
+
     def get_steady_going(self):
         return self.steady_going
     
@@ -133,19 +140,19 @@ class ProgramPetla():
                                               steady_going=False))
             watki.append(thread_with_exception(name="pomiar_rtl_433",
                                                target=pomiar_rtl_433.main,
-                                               interval=10,
+                                               interval=0.5,
                                                steady_going=True))
             watki.append(thread_with_exception(name="wysylka", 
                                               target=wysylanie_pomiarow_do_outsystem.main,
-                                              interval=1,
+                                              interval=0.5,#1,
                                               steady_going=False))
             watki.append(thread_with_exception(name="zaciaganie_z_outsystem", 
                                               target=zaciaganie_plikow_z_outsystemu.main,
-                                              interval=5,
+                                              interval=0.5,#5,
                                               steady_going=False))
             watki.append(thread_with_exception(name="ubijaj_rtl", 
                                               target=ubijaj_rtl_433.main,
-                                              interval=1,
+                                              interval=0.5,#0.5,
                                               steady_going=False))
             #tymczasowo nie pasuje mi do koncepcji - refactor potrzebny
             #watki.append(thread_with_exception(name="ubijaj_procesy",
@@ -158,6 +165,8 @@ class ProgramPetla():
                 self.fp.drukuj(f"watki: {watki}")
                 new_watki=[]
                 for watek in watki:
+                    self.fp.drukuj(f"id wątku!: {watek.get_id()}")  
+                    self.fp.drukuj(f"name: {watek.get_name()} , start_time: {watek.get_start_time()}")
                     if self.dzielenie_modulo_minuty(czas_wedlug_granulacji, watek.get_interval()) == 0:
                         atrybuty=watek.get_attributes()
                         watek.raise_exception()
@@ -207,7 +216,7 @@ def main():
             pp=ProgramPetla(basic_path_ram)
             pp.start()
         else:
-            drukuj("oprogramuj tego windowsa ziom")
+            fp.drukuj("oprogramuj tego windowsa ziom")
         fp.usun_flare(basic_path_ram, flara_skryptu)
     except ExceptionEnvProjektu as e:
         fp.drukuj(f"exception {e}")
