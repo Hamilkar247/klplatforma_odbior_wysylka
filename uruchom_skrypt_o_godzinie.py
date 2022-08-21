@@ -54,13 +54,17 @@ def main():
             fp.file_istnienie(dotenv_path, "dotenv_path - coś nie tak")
             load_dotenv(dotenv_path)
             basic_path_ram=fp.zmienna_env_folder("basic_path_ram","basic_path_ram - coś nie tak")
-            fp.drukuj(f"{os.getpid()}")
+            fp.drukuj(f"pid tego programu {os.getpid()}")
             path_preflara=f"{basic_path_ram}/utrzymanie_wersji.py.preflara"
-            
+            fp.drukuj("przed")
             us=UruchamiaczSkryptu()
             if os.path.exists(path_preflara) == True:
                 flara_skryptu=(f"{basic_path_ram}/{nazwa_programu()}.flara")
-                if os.path.isfile(flara_skryptu) == False:
+                fp.drukuj("sprawdzam czy istnieje flara tego programu")
+
+                print(os.listdir(f"{basic_path_ram}"))
+                if os.path.exists(flara_skryptu) == False:
+                    fp.drukuj("nie ma pliku - rozpoczynamy dzialanie")
                     us.start(flara_skryptu)
                 else:
                     fp.drukuj("flara skryptu istnieje")
@@ -71,7 +75,7 @@ def main():
                     fp.drukuj(f"{pid}")
                     processIsAlive=fp.sprawdz_czy_program_o_tym_pid_dziala(pid)
                     if processIsAlive == True:
-                        fp.drukuj("skrypt istnieje i wydaje sie ze powinien dzialać nic nie robie")
+                        fp.drukuj("skrypt istnieje i wydaje sie ze powinien dzialać - nic nie robie")
                         #TYMCZASOWO
 
                         ##obecny_czas=time.mktime(datetime.now().timetuple())
@@ -86,6 +90,7 @@ def main():
                         ##else:
                         ##    fp.drukuj("na razie wydaje sie ze dziala - odmeldowuje się")
                     else:
+                        fp.drukuj("skrypt ktorego flare znalazl juz umarl - usuwam flare i będę startował")
                         #jak widać byla flara ale jej proces juz umarl
                         os.remove(flara_skryptu)
                         fp.drukuj("usuwam plik flary i startujemy na nowo program")
