@@ -98,7 +98,6 @@ class FunkcjePomocnicze():
         flara_file.close()
 
     def sprawdz_czy_program_o_tym_pid_dziala(self, pid):
-        pid = 0
         if psutil.pid_exists(pid):
             self.drukuj("a process with pid %d exists" % pid)
             return

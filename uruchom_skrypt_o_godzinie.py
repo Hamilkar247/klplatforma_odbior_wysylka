@@ -27,23 +27,6 @@ class UruchamiaczSkryptu():
     
     def __init__(self):
         self.fp=funkcje_pomocnicze_inicjalizacja()
-
-    def sprawdz_program_o_tym_pid_dziala(self, pid):
-        pid = 0
-        if psutil.pid_exists(pid):
-            self.fp.drukuj("a process with pid %d exists" % pid)
-            return
-        else:
-            self.fp.drukuj("a process with pid %d does not exist" % pid)
-        try:
-            self.fp.drukuj("sprawdz_program_o_tym_numerze_pid")
-            os.kill(pid, 0) # 0 doesn't send any signal, but does error checks
-        except OSError:
-            self.fp.drukuj("False")
-            return False #print("Proc exited")
-        else:
-            self.fp.drukuj("True")
-            return True  #print("Proc is still running")
     
     def start(self, flara_path):
         flara_file=open(flara_path, "w")
@@ -86,22 +69,22 @@ def main():
                     pid=int(linie)
                     #dziala_flaga=sprawdz_program_o_tym_pid_dziala(pid)
                     fp.drukuj(f"{pid}")
-                    us.sprawdz_program_o_tym_pid_dziala(pid)
-                    if psutil.pid_exists(pid) == True:
-                        fp.drukuj("skrypt istnieje i wydaje sie ze może dzialać")
+                    processIsAlive=fp.sprawdz_program_o_tym_pid_dziala(pid)
+                    if processIsAlive == True:
+                        fp.drukuj("skrypt istnieje i wydaje sie ze powinien dzialać nic nie robie")
                         #TYMCZASOWO
 
-                        obecny_czas=time.mktime(datetime.now().timetuple())
-                        if os.path.exists(f"{basic_path_ram}/pomiary.txt"):
-                            czas_pliku_pomiary_txt=os.path.getmtime(f"{basic_path_ram}/pomiary.txt")
-                            fp.drukuj(czas_pliku_pomiary_txt)
-                            if czas_pliku_pomiary_txt > obecny_czas - 120:
-                                os.kill(pid, signal.SIGTERM)
-                                os.remove(flara_skryptu)
-                                fp.drukuj("mała liczba pomiarow - skilowalem i uruchamiam raz jeszcze")
-                                us.start(flara_skryptu)
-                        else:
-                            fp.drukuj("na razie wydaje sie ze dziala - odmeldowuje się")
+                        ##obecny_czas=time.mktime(datetime.now().timetuple())
+                        ##if os.path.exists(f"{basic_path_ram}/pomiary.txt"):
+                        ##    czas_pliku_pomiary_txt=os.path.getmtime(f"{basic_path_ram}/pomiary.txt")
+                        ##    fp.drukuj(czas_pliku_pomiary_txt)
+                        ##    if czas_pliku_pomiary_txt > obecny_czas - 120:
+                        ##        os.kill(pid, signal.SIGTERM)
+                        ##        os.remove(flara_skryptu)
+                        ##        fp.drukuj("mała liczba pomiarow - skilowalem i uruchamiam raz jeszcze")
+                        ##        us.start(flara_skryptu)
+                        ##else:
+                        ##    fp.drukuj("na razie wydaje sie ze dziala - odmeldowuje się")
                     else:
                         #jak widać byla flara ale jej proces juz umarl
                         os.remove(flara_skryptu)
