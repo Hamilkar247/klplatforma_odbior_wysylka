@@ -41,7 +41,7 @@ class UbijaczRTL433():
             file_data_pomiaru=f"{basic_path_ram}/pomiary_minuta.txt"
             if os.path.exists(file_data_pomiaru):
                 fdp=open(file_data_pomiaru, "r")
-                pomiary_minuta_stworzenia=fdp.read().strip()
+                pomiary_minuta_stworzenia=int(fdp.read().strip())
                 fdp.close()
                 self.fp.drukuj(f"minuta stworzenia pliku: {pomiary_minuta_stworzenia}")
                 minuta=int(datetime.now().minute)

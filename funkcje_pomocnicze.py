@@ -6,7 +6,7 @@ import os
 from datetime import datetime, timedelta
 import traceback
 from dotenv import load_dotenv
-
+import psutil
 class ExceptionEnvProjektu(Exception):
     pass
 
@@ -16,7 +16,13 @@ class ExceptionNotExistFolder(Exception):
 class ExceptionWindows(Exception):
     pass
 
+class ExceptionRepository(Exception):
+    pass
+
 class ExceptionVirtualenv(Exception):
+    pass
+
+class ExceptionExistInstanceOfProcess(Exception):
     pass
 
 #############
@@ -91,5 +97,19 @@ class FunkcjePomocnicze():
         flara_file.write(f"{str(os.getpid())}")
         flara_file.close()
 
-
-     
+    def sprawdz_czy_program_o_tym_pid_dziala(self, pid):
+        pid = 0
+        if psutil.pid_exists(pid):
+            self.drukuj("a process with pid %d exists" % pid)
+            return
+        else:
+            self.drukuj("a process with pid %d does not exist" % pid)
+        try:
+            self.drukuj("sprawdz_program_o_tym_numerze_pid")
+            os.kill(pid, 0) # 0 doesn't send any signal, but does error checks
+        except OSError:
+            self.drukuj("False")
+            return False #print("Proc exited")
+        else:
+            self.drukuj("True")
+            return True  #print("Proc is still running")
