@@ -29,8 +29,9 @@ class ExceptionExistInstanceOfProcess(Exception):
 
 class FunkcjePomocnicze():
 
-    def __init__(self, nazwa_programu):
+    def __init__(self, nazwa_programu, czy_drukuj=True):
         self.nazwa_programu=nazwa_programu
+        self.czy_drukuj=czy_drukuj
 
     def data_i_godzina(self):
         now = datetime.now()
@@ -39,7 +40,8 @@ class FunkcjePomocnicze():
     
     def drukuj(self, obiekt_do_wydruku):
         try:
-            print(self.data_i_godzina()+f" pid:{os.getpid()}  "+self.nazwa_programu+" "+str(obiekt_do_wydruku))
+            if self.czy_drukuj==True:
+                print(self.data_i_godzina()+f" pid:{os.getpid()}  "+self.nazwa_programu+" "+str(obiekt_do_wydruku))
         except Exception as e:
             print(e)
             print(traceback.print_exc())
@@ -51,8 +53,6 @@ class FunkcjePomocnicze():
         sys.exit()
     
     #########################
-    
-
     
     def file_istnienie(self, path_to_file, komunikat):
         if os.path.exists(path_to_file) == False:

@@ -125,7 +125,7 @@ class ProgramPetla():
         liczb_calk_1 = liczba_1 * 2
         liczb_calk_2 = liczba_2 * 2
         wynik = liczb_calk_1 % liczb_calk_2
-        self.fp.drukuj(f" {liczb_calk_1} {liczb_calk_2} {wynik}")
+        self.fp.drukuj(f"czas_granulacji: {liczb_calk_1} interval: {liczb_calk_2} wynik_modulo: {wynik}")
         return wynik 
     
     def start(self):
@@ -140,20 +140,20 @@ class ProgramPetla():
                                               steady_going=False))
             watki.append(thread_with_exception(name="pomiar_rtl_433",
                                                target=pomiar_rtl_433.main,
-                                               interval=0.5,
+                                               interval=1,#0.5,
                                                steady_going=True))
             watki.append(thread_with_exception(name="wysylka", 
                                               target=wysylanie_pomiarow_do_outsystem.main,
-                                              interval=0.5,#1,
+                                              interval=1,
                                               steady_going=False))
-            watki.append(thread_with_exception(name="zaciaganie_z_outsystem", 
+            watki.append(thread_with_exception(name="zaciaganie_z_outsystem",
                                               target=zaciaganie_plikow_z_outsystemu.main,
-                                              interval=0.5,#5,
+                                              interval=5,
                                               steady_going=False))
-            watki.append(thread_with_exception(name="ubijaj_rtl", 
-                                              target=ubijaj_rtl_433.main,
-                                              interval=0.5,#0.5,
-                                              steady_going=False))
+            #watki.append(thread_with_exception(name="ubijaj_rtl",
+            #                                  target=ubijaj_rtl_433.main,
+            #                                  interval=0.5,#0.5,
+            #                                  steady_going=False))
             #tymczasowo nie pasuje mi do koncepcji - refactor potrzebny
             #watki.append(thread_with_exception(name="ubijaj_procesy",
             #                                   target=ubijaj_procesy.main,

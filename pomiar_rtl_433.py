@@ -26,31 +26,40 @@ class PomiarRTL433():
     def __init__(self):
         self.fp=funkcje_pomocnicze_inicjalizacja()
 
+    def kopiowanie_pomiar_txt(self):
+        shutil.copyfile(self.file_path, self.file_path+".old")
+        os.remove(self.file_path)
+        fdp=open(self.file_data_pomiaru, "w")
+        fdp.write(f"{self.minuta}\n")
+
     def start(self,  basic_path_ram):
         self.fp.drukuj(" - - - - - - -")
         self.fp.drukuj(nazwa_programu())
-        file_path=f"{basic_path_ram}/pomiary.txt"
-        file=open(file_path, "a")
+        self.file_path=f"{basic_path_ram}/pomiary.txt"
+        file=open(self.file_path, "a")
+        file.close()
         command=f"rtl_433 -s 2.5e6 -f 868.5e6 -H 30 -R 75 -R 150 -F json".split(" ")
-        minuta=datetime.now().minute
-        print(f"{minuta}")
-        file_data_pomiaru=f"{basic_path_ram}/pomiary_minuta.txt"
-        fdp=open(file_data_pomiaru, "w")
-        fdp.write(f"{minuta}\n")
+        self.minuta=datetime.now().minute
+        print(f"{self.minuta}")
+        self.file_data_pomiaru=f"{basic_path_ram}/pomiary_minuta.txt"
+        fdp=open(self.file_data_pomiaru, "w")
+        fdp.write(f"{self.minuta}\n")
         fdp.close()
         with subprocess.Popen(command, stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as p:
+            self.kopiowanie_pomiar_txt()
             for line in p.stdout:
                 #ech=lineit(" ")
-                self.fp.drukuj(f"minuta:{minuta}")
+                self.fp.drukuj(f"minuta:{self.minuta}")
                 obecna_minuta=datetime.now().minute
-                if minuta != obecna_minuta:
+                if self.minuta != obecna_minuta:
                     self.fp.drukuj("kopiuje plik")
-                    minuta = obecna_minuta
-                    shutil.copyfile(file_path, file_path+".old")
-                    os.remove(file_path)
-                    fdp=open(file_data_pomiaru, "w")
-                    fdp.write(f"{minuta}\n")
-                file=open(file_path, "a")
+                    self.minuta = obecna_minuta
+
+                    #shutil.copyfile(self.file_path, self.file_path+".old")
+                    #os.remove(self.file_path)
+                    #fdp=open(self.file_data_pomiaru, "w")
+                    #fdp.write(f"{self.minuta}\n")
+                file=open(self.file_path, "a")
                 file.write(f"{line}")
                 file.close()
     
