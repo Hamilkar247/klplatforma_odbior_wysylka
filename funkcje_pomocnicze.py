@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 import traceback
 from dotenv import load_dotenv
 import psutil
+
 class ExceptionEnvProjektu(Exception):
     pass
 
@@ -38,6 +39,9 @@ class FunkcjePomocnicze():
         current_time = now.strftime("%d/%m/%y %H:%M:%S")
         return current_time
     
+    def set_drukuj(self, czy_drukuj):
+        self.czy_drukuj=czy_drukuj
+
     def drukuj(self, obiekt_do_wydruku):
         try:
             if self.czy_drukuj==True:

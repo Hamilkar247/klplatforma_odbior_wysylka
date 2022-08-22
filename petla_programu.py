@@ -120,12 +120,12 @@ class ProgramPetla():
         self.basic_path_ram = basic_path_ram
     
     #przemnazam ułamki minut by miec calosci i dopiero wtedy 
-    def dzielenie_modulo_minuty(self, liczba_1, liczba_2):
+    def dzielenie_modulo_minuty(self, liczba_1, liczba_2, watek_name):
         #mnoże razy dwa żeby granulacje półminutową w dzieleniu modulo wziąć pod uwagę
         liczb_calk_1 = liczba_1 * 2
         liczb_calk_2 = liczba_2 * 2
         wynik = liczb_calk_1 % liczb_calk_2
-        self.fp.drukuj(f"czas_granulacji: {liczb_calk_1} interval: {liczb_calk_2} wynik_modulo: {wynik}")
+        self.fp.drukuj(f"name: {watek_name} czas_gran: {liczb_calk_1} interval: {liczb_calk_2} wynik_modulo: {wynik}")
         return wynik 
     
     def start(self):
@@ -167,7 +167,7 @@ class ProgramPetla():
                 for watek in watki:
                     self.fp.drukuj(f"id wątku!: {watek.get_id()}")  
                     self.fp.drukuj(f"name: {watek.get_name()} , start_time: {watek.get_start_time()}")
-                    if self.dzielenie_modulo_minuty(czas_wedlug_granulacji, watek.get_interval()) == 0:
+                    if self.dzielenie_modulo_minuty(czas_wedlug_granulacji, watek.get_interval(), watek.get_name()) == 0:
                         atrybuty=watek.get_attributes()
                         watek.raise_exception()
                         nowy_watek=thread_with_exception(name=atrybuty['name'], 

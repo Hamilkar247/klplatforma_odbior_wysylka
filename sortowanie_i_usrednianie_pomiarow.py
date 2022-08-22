@@ -73,11 +73,12 @@ class SortoUsredniacz(object):
                 #drukuj("-------------")
                 dict_transmitters=self.usrednienie(dict_transmitters)
                 #wpisanie do pliku
-                file=open(f"{self.basic_path_ram}/sort_usr/{self.time}.txt", "w")
-                for key in dict_transmitters:
-                    file.write(json.dumps(dict_transmitters[key][0]))
-                    file.write("\n")
-                file.close()
+                if self.time is not None:
+                    file=open(f"{self.basic_path_ram}/sort_usr/{self.time}.txt", "w")
+                    for key in dict_transmitters:
+                        file.write(json.dumps(dict_transmitters[key][0]))
+                        file.write("\n")
+                    file.close()
                 os.remove(f"{self.basic_path_ram}/pomiary.txt.old")
             else:
                 self.fp.drukuj("brak pliku z pomiarami")
