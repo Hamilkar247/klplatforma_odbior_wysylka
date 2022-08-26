@@ -150,10 +150,10 @@ class ProgramPetla():
                                               target=zaciaganie_plikow_z_outsystemu.main,
                                               interval=5,
                                               steady_going=False))
-            #watki.append(thread_with_exception(name="ubijaj_rtl",
-            #                                  target=ubijaj_rtl_433.main,
-            #                                  interval=0.5,#0.5,
-            #                                  steady_going=False))
+            watki.append(thread_with_exception(name="ubijaj_rtl",
+                                              target=ubijaj_rtl_433.main,
+                                              interval=0.5,#0.5,
+                                              steady_going=False))
             #tymczasowo nie pasuje mi do koncepcji - refactor potrzebny
             #watki.append(thread_with_exception(name="ubijaj_procesy",
             #                                   target=ubijaj_procesy.main,

@@ -28,6 +28,7 @@ class ResetPortuUsb():
         basic_path_ram=os.getenv("basic_path_ram")
         vendor_id=0x0bda
         product_id=0x2838
+        flaga_wykonania=False
         try:
             dev = finddev(idVendor=vendor_id, idProduct=product_id)
             print(f"dev: {dev}")
@@ -38,16 +39,19 @@ class ResetPortuUsb():
             error_file=f"{basic_path_ram}/reset_portu_usb.py.error"
             if os.path.exists(error_file):
                 os.remove(error_file)
+            flaga_wykonania=True
         except Exception as e:
+            flaga_wykonania=False
             print(f"mozliwy brak odczytu rtl-sdr na portach usb - sprawdz lsusb czy sa takie numery fabryczne {vendor_id} {product_id}")
             print(f"Exception {e}")
             traceback.print_exc()
-            with open(f"{basic_path_ram}/reset_portu_usb.py.log", "a") as f:
-                f.write(f"{self.fp.data_i_godzina()}")
-                f.write("\n")
             with open(f"{basic_path_ram}/reset_portu_usb.py.error", "a") as f:
                 f.write(f"{self.fp.data_i_godzina()}")
                 f.write("\n")
+
+        with open(f"{basic_path_ram}/reset_portu_usb.py.log", "a") as f:
+            f.write(f"{self.fp.data_i_godzina()}\n")
+            f.write(f"flaga_dokanania_resetu: {flaga_wykonania}\n")
 
 def main():
     fp=FunkcjePomocnicze(nazwa_programu())
