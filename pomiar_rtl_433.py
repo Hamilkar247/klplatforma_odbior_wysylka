@@ -79,8 +79,8 @@ def main():
             basic_path_ram=fp.zmienna_env_folder("basic_path_ram", ".env - sprawdz basic_path_ram")
             
             flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
-            flara_file=open(flara_skryptu,"w")
-            print(f"os.getpid(): {os.getpid()}")
+            flara_file=open(flara_skryptu, "w")
+            fp.drukuj(f"os.getpid(): {os.getpid()}")
             flara_file.write(f"{os.getpid()}")
             flara_file.close()
             pomiarRTL433=PomiarRTL433()
@@ -93,6 +93,8 @@ def main():
         fp.drukuj(f"exception {e}")
         fp.drukuj(f"jakies przerwanie w dzialanie")
         traceback.print_exc()
+        error_file=open(f"{basic_path_ram}/reset_portu_usb.py.error", "w")
+        error_file.write(fp.data_i_godzina())
         fp.usun_flare(basic_path_ram, flara_skryptu)
     except ExceptionEnvProjektu as e:
         fp.drukuj(f"exception {e}")

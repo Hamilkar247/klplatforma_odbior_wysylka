@@ -11,6 +11,7 @@ import reset_portu_usb
 from funkcje_pomocnicze import FunkcjePomocnicze, ExceptionEnvProjektu, ExceptionNotExistFolder, ExceptionWindows
 from subprocess import check_output
 from subprocess import CalledProcessError
+import reset_portu_usb
 
 #################################
 
@@ -38,31 +39,41 @@ class UbijaczRTL433():
     def start(self, basic_path_ram):
         if os.path.isdir(basic_path_ram):
 
-            file_data_pomiaru=f"{basic_path_ram}/pomiary_minuta.txt"
-            if os.path.exists(file_data_pomiaru):
-                fdp=open(file_data_pomiaru, "r")
-                pomiary_minuta_stworzenia=int(fdp.read().strip())
-                fdp.close()
-                self.fp.drukuj(f"minuta stworzenia pliku: {pomiary_minuta_stworzenia}")
-                minuta=int(datetime.now().minute)
-                if minuta - pomiary_minuta_stworzenia > 2:
-                    return False
-            else:
-                self.fp.drukuj(f"nie ma {file_data_pomiaru}")
-                self.fp.przerwij_i_wyswietl_czas()
+            #file_data_pomiaru=f"{basic_path_ram}/pomiary_minuta.txt"
+            #if os.path.exists(file_data_pomiaru):
+            #    fdp=open(file_data_pomiaru, "r")
+            #    pomiary_minuta_stworzenia=int(fdp.read().strip())
+            #    fdp.close()
+            #    self.fp.drukuj(f"minuta stworzenia pliku: {pomiary_minuta_stworzenia}")
+            #    minuta=int(datetime.now().minute)
+            #    if minuta - pomiary_minuta_stworzenia > 2:
+            #        return False
+            #else:
+            #    self.fp.drukuj(f"nie ma {file_data_pomiaru}")
+            #    self.fp.przerwij_i_wyswietl_czas()
 
-            if os.name == "posix": 
-                numer_pid=self.get_pid("rtl_433")
-                self.fp.drukuj(f"pid rtl_433: {numer_pid}")
+            #if os.name == "posix": 
+            #    numer_pid=self.get_pid("rtl_433")
+            #    self.fp.drukuj(f"pid rtl_433: {numer_pid}")
             
-                os.remove(file_data_pomiaru)
-                if numer_pid > -1:
-                    os.kill(int(numer_pid), signal.SIGTERM)
-                    return True    
-                return False
-            else:
-                raise ExceptionWindows
-                self.fp.drukuj("brak oprogramowania windowsa")
+            #    os.remove(file_data_pomiaru)
+            #    if numer_pid > -1:
+            #        os.kill(int(numer_pid), signal.SIGTERM)
+            #        return True    
+            #    return False
+            file_error_pomiar=f"{basic_path_ram}/reset_portu_usb.py.error"
+            flaga_resetu_portu_usb=False
+            if os.path.exists(file_error_pomiar):
+                flaga_resetu_portu_usb=True
+            if flaga_resetu_portu_usb:
+                if os.name == "posix":
+                    reset_portu_usb.main() 
+                    if os.path.exists(file_error_pomiar):
+                        self.fp.drukuj(f"plik {file_error_pomiar} nie zostal usuniety - cos nie tak z resetem")
+                        os.remove(file_error_pomiar)
+                else:
+                    raise ExceptionWindows
+                    self.fp.drukuj("brak oprogramowania windowsa")
             return False
     
     def flary_do_sprawdzenia(self):
