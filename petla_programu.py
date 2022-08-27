@@ -150,7 +150,7 @@ class ProgramPetla():
                                               target=zaciaganie_plikow_z_outsystemu.main,
                                               interval=5,
                                               steady_going=False))
-            watki.append(thread_with_exception(name="ubijaj_rtl",
+            watki.append(thread_with_exception(name="ubijaj_rtl_433",
                                               target=ubijaj_rtl_433.main,
                                               interval=0.5,#0.5,
                                               steady_going=False))

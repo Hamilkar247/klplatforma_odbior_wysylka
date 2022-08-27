@@ -38,6 +38,7 @@ class UbijaczRTL433():
 
     def start(self, basic_path_ram):
         if os.path.isdir(basic_path_ram):
+            self.fp.drukuj("funkcja reset - diagnoza czy potrzebne")
 
             #file_data_pomiaru=f"{basic_path_ram}/pomiary_minuta.txt"
             #if os.path.exists(file_data_pomiaru):
@@ -82,7 +83,7 @@ class UbijaczRTL433():
         file_path=""
         try:
             if os.name == "posix":
-                self.fp.drukuj("posix")
+                #self.fp.drukuj("posix")
                 dotenv_path="./.env"
                 self.fp.file_istnienie(dotenv_path, "dotenv_path - coś nie tak")
                 load_dotenv(dotenv_path)
