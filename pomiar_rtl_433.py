@@ -27,8 +27,9 @@ class PomiarRTL433():
         self.fp=funkcje_pomocnicze_inicjalizacja()
 
     def kopiowanie_pomiar_txt(self):
-        shutil.copyfile(self.file_path, self.file_path+".old")
-        os.remove(self.file_path)
+        if os.path.exists(self.file_path):
+            shutil.copyfile(self.file_path, self.file_path+".old")
+            os.remove(self.file_path)
         fdp=open(self.file_data_pomiaru, "w")
         fdp.write(f"{self.minuta}\n")
 
