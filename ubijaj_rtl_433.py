@@ -72,6 +72,10 @@ class UbijaczRTL433():
                     if os.path.exists(file_error_pomiar):
                         self.fp.drukuj(f"plik {file_error_pomiar} nie zostal usuniety - cos nie tak z resetem")
                         os.remove(file_error_pomiar)
+                        file_log=open(f"{basic_path_ram}/reset_portu_usb.py.log", "a")
+                        file_log.write(f"--------------------------")
+                        file_log.write(f"{self.fp.data_i_godzina()} wykonany reset")
+                        file_log.close()
                 else:
                     raise ExceptionWindows
                     self.fp.drukuj("brak oprogramowania windowsa")
