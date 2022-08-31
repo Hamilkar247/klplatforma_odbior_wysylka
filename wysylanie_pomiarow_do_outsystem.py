@@ -514,7 +514,7 @@ def main():
         fp.drukuj(f"------{nazwa_programu()}--------")
         if os.name == "posix":
             fp.drukuj("posix")
-            dotenv_path = "./.env"
+            dotenv_path = "../env_programu"
             fp.file_istnienie(dotenv_path, "sprawdz czy plik .env istnieje")
             load_dotenv(dotenv_path)
             basic_path_ram=fp.zmienna_env_folder('basic_path_ram', ".env - sprawdz basic_path_ram")

@@ -50,7 +50,7 @@ def main():
         fp.drukuj(f"------{nazwa_programu()}--------")
         if os.name == "posix":
             fp.drukuj("posix")
-            dotenv_path = ".env"
+            dotenv_path = "../env_programu"
             if os.path.exists(dotenv_path):
                 load_dotenv(dotenv_path)
             else:

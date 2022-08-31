@@ -74,11 +74,10 @@ def main():
     try:
         fp.drukuj(f"------{nazwa_programu()}--------")
         if os.name=="posix":
-            dotenv_path="./.env"
-            fp.file_istnienie(dotenv_path, "sprawdz czy plik .env istnieje")
+            dotenv_path="../env_projektu"
+            fp.file_istnienie(dotenv_path, "sprawdz czy plik env_projektu istnieje")
             load_dotenv(dotenv_path)
-            basic_path_ram=fp.zmienna_env_folder("basic_path_ram", ".env - sprawdz basic_path_ram")
-            
+            basic_path_ram=fp.zmienna_env_folder("basic_path_ram", "env_projektu - sprawdz basic_path_ram")
             flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
             flara_file=open(flara_skryptu, "w")
             fp.drukuj(f"os.getpid(): {os.getpid()}")

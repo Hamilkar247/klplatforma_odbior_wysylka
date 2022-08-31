@@ -84,7 +84,7 @@ class UbijaczProcesow():
                     ]
             if os.name == "posix":
                 self.fp.drukuj("posix")
-                dotenv_path="./.env"
+                dotenv_path="../env_projektu"
                 self.fp.file_istnienie(dotenv_path, "dotenv_path - coś nie tak")
                 load_dotenv(dotenv_path)
                 basic_path_ram=self.fp.zmienna_env_folder("basic_path_ram", "sprawdz basic_path_ram")

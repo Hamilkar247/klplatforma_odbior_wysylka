@@ -1,13 +1,13 @@
 # - *- coding: utf-8 - *-
 
-import os
-import sys
 import traceback
 from datetime import datetime
 import json
 import requests
 import urllib
 from funkcje_pomocnicze import FunkcjePomocnicze, ExceptionEnvProjektu, ExceptionNotExistFolder, ExceptionWindows
+from dotenv import load_dotenv
+import os
 
 ############################
 
@@ -26,9 +26,10 @@ class CommitFileUpdate():
         self.fp=funkcje_pomocnicze_inicjalizacja()
 
     def aktualizacja_na_outsystem_wersji_programu(self, value):
-        link="https://personal-5ndvfcym.outsystemscloud.com/KlimaLog_core/rest/V1/ProgramSettingsPost"
-        #shutil.copy2(self.path_plik_z_krotkami_do_wysylki_file, self.path_plik_z_krotkami_do_wysylki_file+".work")
-        #print(json_object)
+        dotenv_path="../env_projektu"
+        self.fp.file_istnienie(dotenv_path, "dotenv_path coś nie tak")
+        load_dotenv(dotenv_path)
+        link=self.fp.zmienna_env_folder("url_do_update_wersji_programu", "env_projektu - url_do_update_wersji_programu")
         dict_zwracany={"status_code":"0", "sukces_zapisu":"False", "error_text":"brak"}
         nazwa_settingu="obecna_wersja_czasowa_oprogramowania_na_produkcji"
         data_settingu={
@@ -36,7 +37,6 @@ class CommitFileUpdate():
           "Value": value
         }
         tab_settings=[data_settingu]
-        #kusy_json=json.dumps(tab_kusy)
         self.fp.drukuj(tab_settings)
         try:
             docelowy_url_dla_post=link
@@ -64,9 +64,6 @@ class CommitFileUpdate():
                 except KeyError as e:
                     self.fp.drukuj(f"Nie ma takiego parametru w odeslanym jsonie z outsystemu {e}")
                     dict_zwracany["sukces_zapisu"]=str(f"{False}")
-                #plik_z_danymi=open(self.path_plik_z_krotkami_do_wysylki_file, "w")
-                #plik_z_danymi.write("")
-                #plik_z_danymi.close()
             else:
                 self.fp.drukuj("błędna odpowiedź serwera")
                 self.fp.drukuj(f"response.status_code: {response.status_code}")
