@@ -200,9 +200,11 @@ def main():
         fp.drukuj(f"------{nazwa_programu()}--------")
         if os.name=="posix":
             fp.drukuj("posix")
-            dotenv_path="../env_projektu"
-            fp.file_istnienie(dotenv_path, "dotenv_path - coś nie tak")
-            load_dotenv(dotenv_path)
+            dotenv_path="../env_programu"
+            if os.path.exists(dotenv_path) == True:
+                load_dotenv(dotenv_path)
+            else:
+                raise ExceptionEnvProjektu
             basic_path_ram=fp.zmienna_env_folder("basic_path_ram","basic_path_ram - coś nie tak")
             config_folder="config_klplatforma"
             if os.path.isdir(f"../{config_folder}") == False:
@@ -220,7 +222,7 @@ def main():
         fp.usun_flare(basic_path_ram, flara_skryptu)
     except ExceptionEnvProjektu as e:
         fp.drukuj(f"exception {e}")
-        fp.drukuj(f"czy napewno skopiowales .env.example i podmieniles tam scieszki na takie jakie maja byc w programie?")
+        fp.drukuj(f"czy napewno skopiowales env_projektu.example i podmieniles tam scieszki na takie jakie maja byc w programie?")
         traceback.print_exc()
         fp.usun_flare(basic_path_ram, flara_skryptu)
     except ExceptionWindows as e:

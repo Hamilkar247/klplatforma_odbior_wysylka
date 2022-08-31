@@ -26,10 +26,14 @@ class CommitFileUpdate():
         self.fp=funkcje_pomocnicze_inicjalizacja()
 
     def aktualizacja_na_outsystem_wersji_programu(self, value):
-        dotenv_path="../env_projektu"
-        self.fp.file_istnienie(dotenv_path, "dotenv_path coś nie tak")
-        load_dotenv(dotenv_path)
-        link=self.fp.zmienna_env_folder("url_do_update_wersji_programu", "env_projektu - url_do_update_wersji_programu")
+        dotenv_path="../env_programu"
+        if os.path.exists(dotenv_path):
+            load_dotenv(dotenv_path)
+        else:
+            self.fp.drukuj(f"dotenv_projektu to jakaś ściema")
+            raise ExceptionEnvProjektu
+        link=os.getenv("url_do_update_wersji_programu")
+        self.fp.drukuj(link)
         dict_zwracany={"status_code":"0", "sukces_zapisu":"False", "error_text":"brak"}
         nazwa_settingu="obecna_wersja_czasowa_oprogramowania_na_produkcji"
         data_settingu={

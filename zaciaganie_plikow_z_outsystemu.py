@@ -172,7 +172,7 @@ def main():
             dotenv_path = "../env_programu"
             fp.file_istnienie(dotenv_path, "dotenv_path - coś nie tak")
             load_dotenv(dotenv_path)
-            basic_path_ram=fp.zmienna_env_folder('basic_path_ram', ".env - sprawdz basic_path_ram")
+            basic_path_ram=fp.zmienna_env_folder('basic_path_ram', "env_programu - sprawdz basic_path_ram")
 
             flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
             with open(flara_skryptu, "w") as file:
@@ -184,7 +184,7 @@ def main():
         fp.usun_flare(basic_path_ram, flara_skryptu)
     except ExceptionEnvProjektu as e:
         fp.drukuj(f"exception {e}")
-        fp.drukuj(f"sprawdz czy dobrze wpisales dane w .env (albo czy w ogole je wpisales ...)")
+        fp.drukuj(f"sprawdz czy dobrze wpisales dane w env_programu (albo czy w ogole je wpisales ...)")
         traceback.print_exc()
         fp.usun_flare(basic_path_ram, flara_skryptu)
     except ExceptionWindows as e:
@@ -194,7 +194,7 @@ def main():
         fp.usun_flare(basic_path_ram, flara_skryptu)
     except Exception as e:
         fp.drukuj(f"exception {e}")
-        fp.drukuj(f"sprawdz czy .env widziany jest w crontabie")
+        fp.drukuj(f"sprawdz czy env_programu widziany jest w crontabie")
         traceback.print_exc()
         fp.usun_flare(basic_path_ram, flara_skryptu)
 

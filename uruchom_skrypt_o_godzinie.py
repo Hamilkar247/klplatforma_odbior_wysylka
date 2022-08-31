@@ -54,7 +54,7 @@ def main():
             if os.path.exists(dotenv_path):
                 load_dotenv(dotenv_path)
             else:
-                fp.drukuj("nie udalo sie zaladowac enva - wez ogarnij go dobra?!")
+                fp.drukuj("nie udalo sie zaladowac env_programu - wez ogarnij go dobra?!")
                 raise ExceptionEnvProjektu
             basic_path_ram=fp.zmienna_env_folder("basic_path_ram","basic_path_ram - coś nie tak")
             fp.drukuj(f"pid tego programu {os.getpid()}")

@@ -60,10 +60,10 @@ def main():
     try:
         fp.drukuj(f"------------{nazwa_programu()}-------------")
         if os.name=="posix":
-            dotenv_path = "../env_projektu"
-            fp.file_istnienie(dotenv_path, "sprawdz czy plik env_projektu istnieje")
+            dotenv_path = "../env_programu"
+            fp.file_istnienie(dotenv_path, "sprawdz czy plik env_programu istnieje")
             load_dotenv(dotenv_path)
-            basic_path_ram=fp.zmienna_env_folder("basic_path_ram", "env_projektu - sprawdz basic_path_ram")
+            basic_path_ram=fp.zmienna_env_folder("basic_path_ram", "env_programu - sprawdz basic_path_ram")
             
             flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
             with open(flara_skryptu, "w") as f:
@@ -76,7 +76,7 @@ def main():
         fp.usun_flare(basic_path_ram, flara_skryptu)
     except ExceptionEnvProjektu as e:
         fp.drukuj(f"exception {e}")
-        fp.drukuj(f"sprawdz czy dobrze wpisales dane w .env (albo czy w ogole je wpisales ...)")
+        fp.drukuj(f"sprawdz czy dobrze wpisales dane w env_programu (albo czy w ogole je wpisales ...)")
         traceback.print_exc()
         fp.usun_flare(basic_path_ram, flara_skryptu)
     except ExceptionWindows as e:
@@ -86,7 +86,7 @@ def main():
         fp.usun_flare(basic_path_ram, flara_skryptu)
     except Exception as e:
         fp.drukuj(f"exception {e}")
-        fp.drukuj(f"sprawdz czy .env widziany jest w crontabie")
+        fp.drukuj(f"sprawdz czy env_programu widziany jest w crontabie")
         traceback.print_exc()
         fp.usun_flare(basic_path_ram, flara_skryptu)
 

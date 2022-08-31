@@ -84,7 +84,7 @@ class UbijaczProcesow():
                     ]
             if os.name == "posix":
                 self.fp.drukuj("posix")
-                dotenv_path="../env_projektu"
+                dotenv_path="../env_programu"
                 self.fp.file_istnienie(dotenv_path, "dotenv_path - coś nie tak")
                 load_dotenv(dotenv_path)
                 basic_path_ram=self.fp.zmienna_env_folder("basic_path_ram", "sprawdz basic_path_ram")
@@ -105,7 +105,7 @@ class UbijaczProcesow():
                 self.fp.drukuj("obsluz windowsa w koncu")
         except ExceptionEnvProjektu as e:
             self.fp.drukuj(f"exception {e}")
-            self.fp.drukuj(f"czy napewno skopiowales .env.example i podmieniles tam scieszki na takie jakie maja byc w programie?")
+            self.fp.drukuj(f"czy napewno skopiowales env_programu.example i podmieniles tam scieszki na takie jakie maja byc w programie?")
             traceback.print_exc()
         except ExceptionWindows as e:
             self.fp.drukuj(f"exception {e}")
