@@ -7,3 +7,4 @@ json_do_wysylki.txt
 odebrane_jsony_z_konfiguracjami.json
 odebrane_jsony_z_alarmami.json
 *.swp
+*.old
