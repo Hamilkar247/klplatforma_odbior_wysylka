@@ -56,50 +56,54 @@ def main():
             else:
                 fp.drukuj("nie udalo sie zaladowac env_programu - wez ogarnij go dobra?!")
                 raise ExceptionEnvProjektu
-            basic_path_ram=fp.zmienna_env_folder("basic_path_ram","basic_path_ram - coś nie tak")
-            fp.drukuj(f"pid tego programu {os.getpid()}")
-            path_preflara=f"{basic_path_ram}/utrzymanie_wersji.py.preflara"
-            fp.drukuj("przed")
-            us=UruchamiaczSkryptu()
-            if os.path.exists(path_preflara) == True:
-                flara_skryptu=(f"{basic_path_ram}/{nazwa_programu()}.flara")
-                fp.drukuj("sprawdzam czy istnieje flara tego programu")
+            basic_path_ram=os.getenv("basic_path_ram")
+            if os.path.exists(basic_path_ram):
+                fp.drukuj(f"pid tego programu {os.getpid()}")
+                path_preflara=f"{basic_path_ram}/utrzymanie_wersji.py.preflara"
+                fp.drukuj("przed")
+                us=UruchamiaczSkryptu()
+                if os.path.exists(path_preflara) == True:
+                    flara_skryptu=(f"{basic_path_ram}/{nazwa_programu()}.flara")
+                    fp.drukuj("sprawdzam czy istnieje flara tego programu")
 
-                print(os.listdir(f"{basic_path_ram}"))
-                if os.path.exists(flara_skryptu) == False:
-                    fp.drukuj("nie ma pliku - rozpoczynamy dzialanie")
-                    us.start(flara_skryptu)
-                else:
-                    fp.drukuj("flara skryptu istnieje")
-                    with open(flara_skryptu, "r") as file:
-                        linie=file.readline()
-                    pid=int(linie)
-                    #dziala_flaga=sprawdz_program_o_tym_pid_dziala(pid)
-                    fp.drukuj(f"{pid}")
-                    processIsAlive=fp.sprawdz_czy_program_o_tym_pid_dziala(pid)
-                    if processIsAlive == True:
-                        fp.drukuj("skrypt istnieje i wydaje sie ze powinien dzialać - nic nie robie")
-                        #TYMCZASOWO
-
-                        ##obecny_czas=time.mktime(datetime.now().timetuple())
-                        ##if os.path.exists(f"{basic_path_ram}/pomiary.txt"):
-                        ##    czas_pliku_pomiary_txt=os.path.getmtime(f"{basic_path_ram}/pomiary.txt")
-                        ##    fp.drukuj(czas_pliku_pomiary_txt)
-                        ##    if czas_pliku_pomiary_txt > obecny_czas - 120:
-                        ##        os.kill(pid, signal.SIGTERM)
-                        ##        os.remove(flara_skryptu)
-                        ##        fp.drukuj("mała liczba pomiarow - skilowalem i uruchamiam raz jeszcze")
-                        ##        us.start(flara_skryptu)
-                        ##else:
-                        ##    fp.drukuj("na razie wydaje sie ze dziala - odmeldowuje się")
-                    else:
-                        fp.drukuj("skrypt ktorego flare znalazl juz umarl - usuwam flare i będę startował")
-                        #jak widać byla flara ale jej proces juz umarl
-                        os.remove(flara_skryptu)
-                        fp.drukuj("usuwam plik flary i startujemy na nowo program")
+                    print(os.listdir(f"{basic_path_ram}"))
+                    if os.path.exists(flara_skryptu) == False:
+                        fp.drukuj("nie ma pliku - rozpoczynamy dzialanie")
                         us.start(flara_skryptu)
-            else: 
-                fp.drukuj(f"czekam na flare skryptu {path_preflara}")
+                    else:
+                        fp.drukuj("flara skryptu istnieje")
+                        with open(flara_skryptu, "r") as file:
+                            linie=file.readline()
+                        pid=int(linie)
+                        #dziala_flaga=sprawdz_program_o_tym_pid_dziala(pid)
+                        fp.drukuj(f"{pid}")
+                        processIsAlive=fp.sprawdz_czy_program_o_tym_pid_dziala(pid)
+                        if processIsAlive == True:
+                            fp.drukuj("skrypt istnieje i wydaje sie ze powinien dzialać - nic nie robie")
+                            #TYMCZASOWO
+
+                            ##obecny_czas=time.mktime(datetime.now().timetuple())
+                            ##if os.path.exists(f"{basic_path_ram}/pomiary.txt"):
+                            ##    czas_pliku_pomiary_txt=os.path.getmtime(f"{basic_path_ram}/pomiary.txt")
+                            ##    fp.drukuj(czas_pliku_pomiary_txt)
+                            ##    if czas_pliku_pomiary_txt > obecny_czas - 120:
+                            ##        os.kill(pid, signal.SIGTERM)
+                            ##        os.remove(flara_skryptu)
+                            ##        fp.drukuj("mała liczba pomiarow - skilowalem i uruchamiam raz jeszcze")
+                            ##        us.start(flara_skryptu)
+                            ##else:
+                            ##    fp.drukuj("na razie wydaje sie ze dziala - odmeldowuje się")
+                        else:
+                            fp.drukuj("skrypt ktorego flare znalazl juz umarl - usuwam flare i będę startował")
+                            #jak widać byla flara ale jej proces juz umarl
+                            os.remove(flara_skryptu)
+                            fp.drukuj("usuwam plik flary i startujemy na nowo program")
+                            us.start(flara_skryptu)
+                else:
+                    fp.drukuj(f"czekam na flare skryptu {path_preflara}")
+            else:
+                fp.drukuj("nie ma basic_path_ram - albo nie zostal stworzony folder TermoHigroLightlog")
+                raise ExceptionEnvProjektu
         else:
             fp.drukuj("obsluz tego windowsa ziom")
             raise ExceptionWindows
