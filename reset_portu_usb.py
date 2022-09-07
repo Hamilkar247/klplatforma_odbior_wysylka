@@ -31,9 +31,9 @@ class ResetPortuUsb():
         flaga_wykonania=False
         try:
             dev = finddev(idVendor=vendor_id, idProduct=product_id)
-            print(f"dev: {dev}")
+            self.fp.drukuj(f"dev: {dev}")
             dev.reset()
-            print("dokonano resetu na podanym porcie")
+            self.fp.drukuj("dokonano resetu na podanym porcie")
             with open(f"{basic_path_ram}/reset_portu_usb.py.log", "w") as f:
                 f.write("\n")
             error_file=f"{basic_path_ram}/reset_portu_usb.py.error"
@@ -42,8 +42,8 @@ class ResetPortuUsb():
             flaga_wykonania=True
         except Exception as e:
             flaga_wykonania=False
-            print(f"mozliwy brak odczytu rtl-sdr na portach usb - sprawdz lsusb czy sa takie numery fabryczne {vendor_id} {product_id}")
-            print(f"Exception {e}")
+            self.fp.drukuj(f"mozliwy brak odczytu rtl-sdr na portach usb - sprawdz lsusb czy sa takie numery fabryczne {vendor_id} {product_id}")
+            self.fp.drukuj(f"Exception {e}")
             traceback.print_exc()
             with open(f"{basic_path_ram}/reset_portu_usb.py.error", "a") as f:
                 f.write(f"{self.fp.data_i_godzina()}")
@@ -51,8 +51,7 @@ class ResetPortuUsb():
 
         with open(f"{basic_path_ram}/reset_portu_usb.py.log", "a") as f:
             f.write(f"{self.fp.data_i_godzina()}\n")
-            f.write(f"flaga_dokanania_resetu: {flaga_wykonania}\n")
-
+            f.write(f"flaga_dokonania_resetu: {flaga_wykonania}\n")o
 def main():
     fp=FunkcjePomocnicze(nazwa_programu())
     basic_path_ram=""

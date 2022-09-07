@@ -66,6 +66,9 @@ class UbijaczRTL433():
             flaga_resetu_portu_usb=False
             if os.path.exists(file_error_pomiar):
                 flaga_resetu_portu_usb=True
+                self.fp.drukuj("istnieje plik z bledami - trzeba zresetowac port")
+            else:
+                self.fp.drukuj("nie wykryto pliku")
             if flaga_resetu_portu_usb:
                 if os.name == "posix":
                     reset_portu_usb.main() 
