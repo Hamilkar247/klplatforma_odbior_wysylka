@@ -51,7 +51,7 @@ class ResetPortuUsb():
 
         with open(f"{basic_path_ram}/reset_portu_usb.py.log", "a") as f:
             f.write(f"{self.fp.data_i_godzina()}\n")
-            f.write(f"flaga_dokonania_resetu: {flaga_wykonania}\n")o
+            f.write(f"flaga_dokonania_resetu: {flaga_wykonania}\n")
 def main():
     fp=FunkcjePomocnicze(nazwa_programu())
     basic_path_ram=""
