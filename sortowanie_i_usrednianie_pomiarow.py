@@ -205,24 +205,16 @@ def main():
             load_dotenv(dotenv_path)
             basic_path_ram=fp.zmienna_env_folder("basic_path_ram", "env_programu - sprawdz basic_path_ram")
             
-            iteracji=0
-            while True:
-                if iteracji < 3:
-                    iteracji=iteracji+1
-                else:
-                    fp.drukuj("przerwij")
-                    break
-                flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
-                with open(flara_skryptu, "w") as file:
-                    file.write(f"{str(os.getpid())}")
-                file.close()
-                inicjalna=False
-                if os.path.exists(f"{basic_path_ram}/pomiary.txt.old"):
-                    sortousredniacz=SortoUsredniacz(inicjalna)
-                    break
-                else:
-                    fp.drukuj("brak pomiarow do posortowania i usrednienia")
-                time.sleep(1)
+            flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
+            with open(flara_skryptu, "w") as file:
+                file.write(f"{str(os.getpid())}")
+            file.close()
+            inicjalna=False
+            if os.path.exists(f"{basic_path_ram}/pomiary.txt.old"):
+                sortousredniacz=SortoUsredniacz(inicjalna)
+            else:
+                fp.drukuj("brak pomiarow do posortowania i usrednienia")
+            time.sleep(1)
         else:
             drukuj("oprogramuj tego windowsa ziom")
         fp.usun_flare(basic_path_ram, flara_skryptu)
@@ -233,7 +225,7 @@ def main():
         fp.usun_flare(basic_path_ram, flara_skryptu)
     except Exception as e:
         fp.drukuj(f"exception {e}")
-        fp.drukuj(f"sprawdz czy .env widziany jest w crontabie")
+        fp.drukuj(f"sprawdz czy env_programu widziany jest w crontabie")
         traceback.print_exc()
         fp.usun_flare(basic_path_ram, flara_skryptu)
 
