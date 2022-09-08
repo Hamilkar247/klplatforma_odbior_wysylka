@@ -95,7 +95,12 @@ class FunkcjePomocnicze():
             if os.path.exists(flara_do_sprawdzenia):
                 os.remove(flara_do_sprawdzenia)
                 self.drukuj("usuwam flare")
-    
+
+    def get_pid_from_flara_file(self, flara_path):
+        file_flara_pid=open(flara_path, "r")
+        pid=str(file_flara_pid.read()).strip()
+        return pid
+
     def stworz_flare_z_pid(self, flara_path):
         flara_file=open(flara_path, "w")
         flara_file.write(f"{str(os.getpid())}")

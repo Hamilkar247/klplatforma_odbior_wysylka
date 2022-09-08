@@ -179,9 +179,13 @@ class ProgramPetla():
                     else:
                         new_watki.append(watek)
                     if watek.get_steady_going() == True:
+                        self.fp.drukuj("parametr stead_going")
                         path_pomiary_minuta = f"{self.basic_path_ram}/pomiary_minuta.txt"
                         if os.path.exists(path_pomiary_minuta) == False:
                             new_watki.append(nowy_watek)
+                            self.fp.drukuj("wyglada na to ze nie ma pomiaru - otwieram nowy watek")
+                        else:
+                            self.fp.drukuj("trwa pomiar - nie odpalam nowego programu do pomiaru ")
                 watki = new_watki
                 time.sleep(krok*60) #time.sleep będą w sekundach 0.5*60=30
                 czas_wedlug_granulacji = czas_wedlug_granulacji + krok
@@ -222,7 +226,7 @@ def main():
         fp.usun_flare(basic_path_ram, flara_skryptu)
     except ExceptionEnvProjektu as e:
         fp.drukuj(f"exception {e}")
-        fp.drukuj(f"czy napewno skopiowales env_projektu.example i podmieniles tam scieszki na takie jakie maja byc w programie?")
+        fp.drukuj(f"czy napewno skopiowales env_programu.example i podmieniles tam scieszki na takie jakie maja byc w programie?")
         traceback.print_exc()
         fp.usun_flare(basic_path_ram, flara_skryptu)
     except ExceptionWindows as e:
@@ -232,7 +236,7 @@ def main():
         fp.usun_flare(basic_path_ram, flara_skryptu)
     except Exception as e:
         fp.drukuj(f"exception {e}")
-        fp.drukuj(f"sprawdz czy .env widziany jest w crontabie")
+        fp.drukuj(f"sprawdz czy env_programu widziany jest w crontabie")
         traceback.print_exc()
         fp.usun_flare(basic_path_ram, flara_skryptu)
 

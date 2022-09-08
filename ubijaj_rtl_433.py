@@ -79,6 +79,8 @@ class UbijaczRTL433():
                         file_log.write(f"--------------------------")
                         file_log.write(f"{self.fp.data_i_godzina()} wykonany reset")
                         file_log.close()
+                    else:
+                        self.fp.drukuj(f"reset wydaje się został przeprowadzony poprawnie")      
                 else:
                     raise ExceptionWindows
                     self.fp.drukuj("brak oprogramowania windowsa")

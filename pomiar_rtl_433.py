@@ -71,24 +71,39 @@ def main():
     fp=FunkcjePomocnicze(nazwa_programu())
     basic_path_ram=""
     flara_skryptu=""
+    odpalamy_pomiar=False
     try:
         fp.drukuj(f"------{nazwa_programu()}--------")
         if os.name=="posix":
             dotenv_path="../env_programu"
             fp.file_istnienie(dotenv_path, "sprawdz czy plik env_programu istnieje")
             load_dotenv(dotenv_path)
-            basic_path_ram=fp.zmienna_env_folder("basic_path_ram", "env_projektu - sprawdz basic_path_ram")
+            basic_path_ram=fp.zmienna_env_folder("basic_path_ram", "env_programu - sprawdz basic_path_ram")
             flara_skryptu=f"{basic_path_ram}/{nazwa_programu()}.flara"
-            flara_file=open(flara_skryptu, "w")
-            fp.drukuj(f"os.getpid(): {os.getpid()}")
-            flara_file.write(f"{os.getpid()}")
-            flara_file.close()
-            pomiarRTL433=PomiarRTL433()
-            pomiarRTL433.start(basic_path_ram)
+            flara_file=None
+            if os.path.exists(flara_skryptu) == False:
+                fp.drukuj("nie istnieje dzialajacy program pomiar")
+                odpalamy_pomiar=True        
+            else:
+                pid=fp.get_pid_from_flara_file(flara_skryptu)
+                fp.drukuj(pid)
+                if fp.sprawdz_czy_program_o_tym_pid_dziala(pid) == False:
+                    os.remove(flara_skryptu)
+                    odpalamy_pomiar=True
+                else:
+                    odpalamy_pomiar=False
+            if odpalamy_pomiar==True:
+                flara_file=open(flara_skryptu, "w")
+                fp.drukuj(f"os.getpid(): {os.getpid()}")
+                flara_file.write(f"{os.getpid()}")
+                flara_file.close()
+                pomiarRTL433=PomiarRTL433()
+                pomiarRTL433.start(basic_path_ram)
         else:
             fp.drukuj("oprogramuj tego windowsa w koncu")
             raise fp.exceptionWindows
-        fp.usun_flare(basic_path_ram, flara_skryptu)
+        if odpalamy_pomiar==True:
+            fp.usun_flare(basic_path_ram, flara_skryptu)
     except subprocess.CalledProcessError as e:
         fp.drukuj(f"exception {e}")
         fp.drukuj(f"jakies przerwanie w dzialanie")
@@ -98,7 +113,7 @@ def main():
         fp.usun_flare(basic_path_ram, flara_skryptu)
     except ExceptionEnvProjektu as e:
         fp.drukuj(f"exception {e}")
-        fp.drukuj(f"sprawdz czy dobrze wpisales dane w .env (albo czy w ogole je wpisales ...)")
+        fp.drukuj(f"sprawdz czy dobrze wpisales dane w env_programu (albo czy w ogole je wpisales ...)")
         traceback.print_exc()
         fp.usun_flare(basic_path_ram, flara_skryptu)
     except ExceptionWindows as e:
@@ -108,7 +123,7 @@ def main():
         fp.usun_flare(basic_path_ram, flara_skryptu)
     except Exception as e:
         fp.drukuj(f"exception {e}")
-        fp.drukuj(f"zwskazowka do czytającego - sprawdz czy .env widziany jest w crontabie")
+        fp.drukuj(f"zwskazowka do czytającego - sprawdz czy env_programu widziany jest w crontabie")
         #os.remove(fal)
         traceback.print_exc()
         fp.usun_flare(basic_path_ram, flara_skryptu)
